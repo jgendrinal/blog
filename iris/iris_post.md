@@ -1,3 +1,6 @@
+Exploring the Iris Dataset
+==========================
+
 One of the most common datasets that I came across in my journey into the data science world is called Iris. The dataset is a record of feature measurements (petal lengths and widths, sepal lengths and widths) of different species of Iris flowers. It is often used to demonstrate simple machine learning techniques.
 
 Many versions of this dataset exist, but we will be using the data found [here](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data).
@@ -80,7 +83,9 @@ gather(iris, key, value, -Species) %>%
         axis.ticks.x = element_blank())
 ```
 
-![](iris_post_files/figure-markdown_github/unnamed-chunk-3-1.png) Sepal length and sepal width seem to spread evenly about their own centers. Petal lengths and petal widths' values are more spread below values lower than the average value (I'm oversimplifying here - massively - but this is a more or less good observation). Let's break down the values into their species:
+![](iris_post_files/figure-markdown_github/unnamed-chunk-3-1.png)
+
+Sepal length and sepal width seem to spread evenly about their own centers. Petal lengths and petal widths' values are more spread below values lower than the average value (I'm oversimplifying here - massively - but this is a more or less good observation). Let's break down the values into their species:
 
 ``` r
 gather(iris, key, value, -Species) %>% 
@@ -93,7 +98,9 @@ gather(iris, key, value, -Species) %>%
         axis.ticks.x = element_blank())
 ```
 
-![](iris_post_files/figure-markdown_github/unnamed-chunk-4-1.png) Eachs species seem to have its own set of petal length and width values apart from each other, which is good for us. We're trying to find see if we can classify them with our machine learning. The values are much closer together for sepal lengths and widths for each species.
+![](iris_post_files/figure-markdown_github/unnamed-chunk-4-1.png)
+
+Each species seem to have its own set of petal length and width values apart from each other, which is good for us. We're trying to find see if we can classify them with our machine learning. The values are much closer together for sepal lengths and widths for each species.
 
 Lets take a look at how some of these variables interact. Let's compare whether there may be a relationship between Petal.length and Petal.width.
 
@@ -102,14 +109,18 @@ ggplot(iris, aes(x=Petal.length, y=Petal.width)) +
   geom_point(aes(color=Species))
 ```
 
-![](iris_post_files/figure-markdown_github/unnamed-chunk-5-1.png) Clearly, these two values increase together, which makes sense. Otherwise, we'd have very long but rather thin petals, or very short but rather wide petals. The measurements show that we can almost cut lines into the dataset to divide the different colors of dots. Let's try Sepal length and sepal width.
+![](iris_post_files/figure-markdown_github/unnamed-chunk-5-1.png)
+
+Clearly, these two values increase together, which makes sense. Otherwise, we'd have very long but rather thin petals, or very short but rather wide petals. The measurements show that we can almost cut lines into the dataset to divide the different colors of dots. Let's try Sepal length and sepal width.
 
 ``` r
 ggplot(iris, aes(x=Sepal.length, y=Sepal.width)) + 
   geom_point(aes(color=Species))
 ```
 
-![](iris_post_files/figure-markdown_github/unnamed-chunk-6-1.png) Setosa is very distinct from the other two species in terms of Sepal.length and width, but versicolor and virginica seem to mix into each other.
+![](iris_post_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+Setosa is very distinct from the other two species in terms of Sepal.length and width, but versicolor and virginica seem to mix into each other.
 
 Now that we know that these measurements are more or less enough to differentiate these species. Lets try to do machine learning on this dataset.
 
@@ -165,7 +176,9 @@ Let's check how that decision tree looks like:
 prp(dt)
 ```
 
-![](iris_post_files/figure-markdown_github/unnamed-chunk-10-1.png) Okay, so our algorithm has two rules. The first is that if the petal length is less than 2.6cm, it sorts the specimen as a setosa. If not, it moves to the second rule, which is if the petal widthis less than 1.6cm, its a vericosa. Otherwise, its a virginica.
+![](iris_post_files/figure-markdown_github/unnamed-chunk-10-1.png)
+
+Okay, so our algorithm has two rules. The first is that if the petal length is less than 2.6cm, it sorts the specimen as a setosa. If not, it moves to the second rule, which is if the petal widthis less than 1.6cm, its a vericosa. Otherwise, its a virginica.
 
 This simple algorithm scored at a ~93% accuracy! Which is great for a first ever algorithm, but we can definitely do better. I'm not going to do any pruning for this tree. I just want to show people how these algorithms look.
 
@@ -177,7 +190,9 @@ iris.pr %>%
   geom_point(aes(color = hit, shape = pred))
 ```
 
-![](iris_post_files/figure-markdown_github/unnamed-chunk-11-1.png) We can see that indeed, these errors in classification occur in the boundary line of one of the conditions of our decision tree: "Petal.width &lt; 1.6".
+![](iris_post_files/figure-markdown_github/unnamed-chunk-11-1.png)
+
+We can see that indeed, these errors in classification occur in the boundary line of one of the conditions of our decision tree: "Petal.width &lt; 1.6".
 
 The decision tree algorithm results in a 93% accuracy. Let's see if any of our other algorithms do any better.
 
@@ -212,7 +227,9 @@ iris.pr %>%
   geom_point(aes(color = hit, shape = pred))
 ```
 
-![](iris_post_files/figure-markdown_github/unnamed-chunk-14-1.png) Clearly, the model failed when it tried to sort between two species that were very close to each other (in red). Will our last algorithm pack the greatest punch?
+![](iris_post_files/figure-markdown_github/unnamed-chunk-14-1.png)
+
+Clearly, the model failed when it tried to sort between two species that were very close to each other (in red). Will our last algorithm pack the greatest punch?
 
 3. Support vector classification (SVC)
 --------------------------------------
@@ -247,7 +264,9 @@ iris.pr %>%
   geom_point(aes(color = hit, shape = pred))
 ```
 
-![](iris_post_files/figure-markdown_github/unnamed-chunk-17-1.png) Same problem as the previous algorithm's performance. It made the mistakes where the specimens were too close to each other.
+![](iris_post_files/figure-markdown_github/unnamed-chunk-17-1.png)
+
+Same problem as the previous algorithm's performance. It made the mistakes where the specimens were too close to each other.
 
 I hope this first look just gave you a taste of how to wrangle data in R and how to do simple machine learning, and I hope you enjoyed going through this dataset as much as I did.
 
