@@ -277,9 +277,14 @@ Thank you so much for taking the time to read this piece!
 Footnote:
 ---------
 
-More dataset information: [UCI](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.names)
+More dataset information:
+
+[UCI](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.names)
 
 Feedback:
+
 Email: <francis.endrinal@gmail.com>
+
 FB Messenger: m.me/transparencyman
+
 Twitter, Instagram: @jgendrinal
