@@ -54,6 +54,7 @@ It turns out that this dataset was used to try to make a computer predict which 
 This data was used in 1936 by Ronald A. Fisher to determine if you can identify species of Iris flower just by measuring the lengths and widths of sepals and petals. He published his results [here](http://rcs.chemometrics.ru/Tutorials/classification/Fisher.pdf).  
 
 And just so the reader understands what exactly the petals and the sepals of a flower are, we have a very helpful image labeling the parts of the flower:  
+
 ![](img/parts.gif)
   
 Here's a rough and simple-worded way of differentiating them:
