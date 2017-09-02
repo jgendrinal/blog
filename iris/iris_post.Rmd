@@ -233,9 +233,8 @@ I hope this first look just gave you a taste of how to wrangle data in R and how
 If you find a mistake (I'm a beginner after all) in any of the work in this piece, feel free to send feedback in the links below.
 
 Thank you so much for taking the time to read this piece!  
-
+  
 ## Footnote:  
-
 More dataset information:   [UCI](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.names)  
 
 Feedback:  

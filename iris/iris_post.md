@@ -274,6 +274,9 @@ If you find a mistake (I'm a beginner after all) in any of the work in this piec
 
 Thank you so much for taking the time to read this piece!
 
+Footnote:
+---------
+
 More dataset information: [UCI](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.names)
 
 Feedback:
