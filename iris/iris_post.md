@@ -148,8 +148,8 @@ Splitting our dataset allows us to test how well our trained algorithm could wor
 
 With our dataset split, let's get into our machine learning!
 
-1. Decision Trees
------------------
+Decision Trees
+--------------
 
 Put simply, the output algorithm of a decision tree is that it establishes rules on how to divide your dataset such that it can make a clean division of the data. The **tree** is the descending network of points that represent the conditions ("If 9 &gt; 3" for example) and the path if the condition is True - "yes", and the path if the condition is False - "no". How we get these rules is beyond the scope of this blog post.
 
@@ -196,8 +196,8 @@ We can see that indeed, these errors in classification occur in the boundary lin
 
 The decision tree algorithm results in a 93% accuracy. Let's see if any of our other algorithms do any better.
 
-2. k-NN (Nearest neighbors) clustering
---------------------------------------
+k-NN (Nearest neighbors) clustering
+-----------------------------------
 
 kNN is another kind of algorithm. The output of a kNN is the groups of clusters that are sorted based on the available data. Our clusters in this case are the Species that we want each specimen to be sorted on.
 
@@ -231,8 +231,8 @@ iris.pr %>%
 
 Clearly, the model failed when it tried to sort between two species that were very close to each other (in red). Will our last algorithm pack the greatest punch?
 
-3. Support vector classification (SVC)
---------------------------------------
+Support vector classification (SVC)
+-----------------------------------
 
 Our last model seems to be the most difficult of the three to talk about. Partly because you have to explain to the reader what a support vector actually is and what the algorithm maximizes in order to classify the specimens into their species. And then there's the concept of a "kernel"" which is another concept to get into. Put generally, this model takes the clusters and tries its very hardest to maximize the distance between them.
 The algorithm is executed with the following R code:
