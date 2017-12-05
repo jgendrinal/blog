@@ -1,7 +1,7 @@
 Exploring the Iris Dataset
-==========================
+================
 
-One of the most common datasets that I came across in my journey into the data science world is called Iris. The dataset is a record of feature measurements (petal lengths and widths, sepal lengths and widths) of different species of Iris flowers. It is often used to demonstrate simple machine learning techniques.
+One of the most common example datasets that I came across in my journey into the data science world is called Iris. The dataset is a record of feature measurements (petal lengths and widths, sepal lengths and widths) of different species of Iris flowers. It is often used to demonstrate simple machine learning techniques.
 
 Many versions of this dataset exist, but we will be using the data found [here](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.data).
 
@@ -36,18 +36,18 @@ read_csv("data/iris.csv") %>%
 
 With the dataset now saved to iris, we can now take an initial look at it.
 
-    ## # A tibble: 150 × 5
+    ## # A tibble: 150 x 5
     ##    Sepal.length Sepal.width Petal.length Petal.width     Species
     ##           <dbl>       <dbl>        <dbl>       <dbl>       <chr>
-    ## 1           5.1         3.5          1.4         0.2 Iris-setosa
-    ## 2           4.9         3.0          1.4         0.2 Iris-setosa
-    ## 3           4.7         3.2          1.3         0.2 Iris-setosa
-    ## 4           4.6         3.1          1.5         0.2 Iris-setosa
-    ## 5           5.0         3.6          1.4         0.2 Iris-setosa
-    ## 6           5.4         3.9          1.7         0.4 Iris-setosa
-    ## 7           4.6         3.4          1.4         0.3 Iris-setosa
-    ## 8           5.0         3.4          1.5         0.2 Iris-setosa
-    ## 9           4.4         2.9          1.4         0.2 Iris-setosa
+    ##  1          5.1         3.5          1.4         0.2 Iris-setosa
+    ##  2          4.9         3.0          1.4         0.2 Iris-setosa
+    ##  3          4.7         3.2          1.3         0.2 Iris-setosa
+    ##  4          4.6         3.1          1.5         0.2 Iris-setosa
+    ##  5          5.0         3.6          1.4         0.2 Iris-setosa
+    ##  6          5.4         3.9          1.7         0.4 Iris-setosa
+    ##  7          4.6         3.4          1.4         0.3 Iris-setosa
+    ##  8          5.0         3.4          1.5         0.2 Iris-setosa
+    ##  9          4.4         2.9          1.4         0.2 Iris-setosa
     ## 10          4.9         3.1          1.5         0.1 Iris-setosa
     ## # ... with 140 more rows
 
@@ -275,17 +275,12 @@ If you find a mistake (I'm a beginner after all) in any of the work in this piec
 
 Thank you so much for taking the time to read this piece!
 
-Footnote:
----------
+------------------------------------------------------------------------
 
 More dataset information:
-
 [UCI](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.names)
 
 Feedback:
-
 Email: <francis.endrinal@gmail.com>
-
 FB Messenger: m.me/transparencyman
-
 Twitter, Instagram: @jgendrinal
