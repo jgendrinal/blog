@@ -1,5 +1,6 @@
 Exploring the Iris Dataset
 ================
+Jose Francisco Endrinal
 
 One of the most common example datasets that I came across in my journey into the data science world is called Iris. The dataset is a record of feature measurements (petal lengths and widths, sepal lengths and widths) of different species of Iris flowers. It is often used to demonstrate simple machine learning techniques.
 
@@ -277,8 +278,7 @@ Thank you so much for taking the time to read this piece!
 
 ------------------------------------------------------------------------
 
-More dataset information:
-[UCI](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.names)
+More dataset information: [UCI](https://archive.ics.uci.edu/ml/machine-learning-databases/iris/iris.names)
 
 Feedback:
 Email: <francis.endrinal@gmail.com>
