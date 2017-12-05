@@ -1,0 +1,22 @@
+---
+title: "[Blog Post Title]"
+author: 'Jose Francisco Endrinal'
+output: github_document
+---
+
+
+
+```{r}
+# Load packages
+
+# Load dataset
+```
+
+
+***
+More dataset information: [[Dataset description]](link to website)  
+
+Feedback:  
+Email: francis.endrinal@gmail.com  
+FB Messenger: m.me/transparencyman  
+Twitter, Instagram: @jgendrinal

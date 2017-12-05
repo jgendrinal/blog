@@ -1,0 +1,11 @@
+Package: blogfrancis
+Type: Package
+Title: Files and Templates for this blog
+Version: 0.1.0
+Author: Jose Francisco Endrinal
+Maintainer: <francis.endrinal@gmail.com>
+Description: This package shall contain all the files and templates for 
+    the Github repo of the Medium blog. 
+License: None
+Encoding: UTF-8
+LazyData: true
