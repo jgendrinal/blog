@@ -10,7 +10,29 @@ output: github_document
 # Load packages
 
 # Load dataset
+
 ```
+
+
+
+### Exploratory Data Analysis
+
+
+
+### Variable Omission
+
+
+
+### Model building
+
+
+
+### Model training
+
+
+
+### Model testing
+
 
 
 ***
