@@ -1,31 +1,66 @@
 ---
-title: "Wasted on data: Exploring the wine dataset"
+title: "Wasted: The wine dataset"
+author: 'Jose Francisco Endrinal'
 output: github_document
 ---
 
 # Wasted on data: Exploring the wine dataset
 
-Whether you're a drinker or not, chances are that alcohol has played some part in the culture of where you live. 
+Whether you're a drinker or not, chances are that alcohol has played some part in the culture of where you live. It would be awesome to take measurements on any wine and be able to determine what kind of wine it was. In this dataset, we're sticking with three unidentified types of wine.  
+
+The wine dataset is a series of measurements of different samples of three types of wine. In this dataset, there are thirteen characteristics that were measured:
+ 	1. Alcohol
+ 	2. Malic acid
+ 	3. Ash
+	4. Alcalinity of ash  
+ 	5. Magnesium
+	6. Total phenols
+ 	7. Flavanoids
+ 	8. Nonflavanoid phenols
+ 	9. Proanthocyanins
+	10. Color intensity
+ 	11. Hue
+ 	12. OD280/OD315 of diluted wines
+ 	13. Proline  
+
+Unfortunately, we do not have the units of these measurements and simply have to rely on their relative values.  
 
 ```{r warning=FALSE, message=FALSE}
+# Loading package
 suppressPackageStartupMessages({
-  library(tidyverse)
-  library(knitr)
-})
+  library(tidyverse)})
+#Loading dataset
 read_csv("data/wine.csv") %>% 
-  rename(alcohol = X1, 
-         mall.Ac = X2, 
-         ash = X3, 
-         alk.Ash = X4, 
-         magnes = X5, 
-         tot.Phen = X6, 
-         flavan = X7, 
-         nonFl.ph = X8, 
-         proanth = X9, 
-         col.Int = X10, 
-         hue = X11, 
-         dil = X12, 
-         proline = X13) -> wine
+  rename(class = X1, 
+         alcohol = X2, 
+         mall.Ac = X3, 
+         ash = X4, 
+         alk.Ash = X5, 
+         magnes = X6, 
+         tot.Phen = X7, 
+         flavan = X8, 
+         nonFl.ph = X9, 
+         proanth = X10, 
+         col.Int = X11, 
+         hue = X12, 
+         dil = X13, 
+         proline = X14) -> wine
+```
+
+```{r echo=FALSE}
+wine
+```
+Looking at the dataset alone, we can see that most of these variables are continuous. But we have too many characteristics to work with, hurting the insight we could gain. Let's try to do what we did last time with our [breast cancer dataset](../breastcancer/breastcancer_post1.md). We need to see if there may be an apparent way to separate the classes and the characteristics based on visualization alone. 
+
+### Exploratory data analysis
+
+```{r warning=FALSE}
+mutate(wine, class = as.character(class)) %>%
+  mutate_if(is.numeric, scale) %>% 
+  gather(key, value, -class) %>% 
+  ggplot(aes(x = value)) + 
+  geom_density(aes(fill = class), position = "stack") + 
+  facet_wrap(~ key, ncol = 4)
 ```
 
 
