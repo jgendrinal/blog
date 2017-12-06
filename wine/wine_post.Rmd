@@ -1,0 +1,31 @@
+---
+title: "Wasted on data: Exploring the wine dataset"
+output: github_document
+---
+
+# Wasted on data: Exploring the wine dataset
+
+Whether you're a drinker or not, chances are that alcohol has played some part in the culture of where you live. 
+
+```{r warning=FALSE, message=FALSE}
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(knitr)
+})
+read_csv("data/wine.csv") %>% 
+  rename(alcohol = X1, 
+         mall.Ac = X2, 
+         ash = X3, 
+         alk.Ash = X4, 
+         magnes = X5, 
+         tot.Phen = X6, 
+         flavan = X7, 
+         nonFl.ph = X8, 
+         proanth = X9, 
+         col.Int = X10, 
+         hue = X11, 
+         dil = X12, 
+         proline = X13) -> wine
+```
+
+
