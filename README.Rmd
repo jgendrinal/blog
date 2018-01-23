@@ -10,8 +10,11 @@ This project serves as a Github link to my [blog](https://medium.com/@jgendrinal
 - *[Iris](iris/iris_post.md)*  
 A first look at the Iris dataset, with simple machine learning.
 
-- *[Breastcancer (Part 1)](breastcancer_post1.md)*  
+- *[Breastcancer (Part 1)](breastcancer/breastcancer_post1.md)*  
 Breaking the breast cancer dataset with principal component analysis and logistic regression.
+
+- *[Wine](wine/wine_post.md)*  
+Taking apart the wine dataset, doing multinomial logistical regression, and finding the distribution of scores.
 
 ### Templates
 
