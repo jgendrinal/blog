@@ -97,7 +97,8 @@ tt.sets
 Now that we have the train and test sets, we can build our multinomial logistic regression model using the `nnet` package.  
 
 ### Building the multinomial regression model
-We will structure the function we will use to map the training sets so that the output of this function is a model.  
+We will structure the function we will use to map the training sets so that the output of this function is a model. What makes this model different from the normal logistic regression model is that this model is for a class where the values are not 1 or 0. In this case, the values can be 1, 2, or 3.  
+
 ```{r}
 mnom <- function(df){
   multinom(class ~ 
@@ -137,7 +138,11 @@ score <- summarise(tt.sets, score = mean(hit))
 score[[1]]
 ```
 
+With an accuraccy of about ~93 percent, this model can still do better, but this is a great starting point for it.  
+
 ## Distribution of scores
+
+Let's see how densely the scores are together so that we can see how likely it is to have another score other than our ~93 percent average.  
 
 ```{r}
 select(tt.sets, hit) %>% 
@@ -145,11 +150,29 @@ select(tt.sets, hit) %>%
   geom_density(fill = "#87CEFA")
 ```
 
-The distribution is not gaussian, but more scores ten toward a 95% accuracy on the part of this model.  
+The distribution is not gaussian, but more scores ten toward a ~95 percent  accuracy on the part of this model.  
 
 ## Visualizing the effect of a multinomial regression
 
 We visualize the effect of two variables on the regression and see if a clear joint relationship can be seen with regard to separation.  
+
+```{r}
+select(wine, 
+       class, 
+       dil, 
+       hue, 
+       tot.Phen, 
+       col.Int, 
+       proline) %>% 
+  mutate(
+    dil = scale(dil), 
+    hue = scale(hue), 
+    tot.Phen = scale(tot.Phen), 
+    col.Int = scale(col.Int), 
+    proline = scale(proline)) %>% 
+  
+```
+
 
 ```{r echo=FALSE}
 rm(mnom, mnom_mscore, mnom_predict, mnom_response)
