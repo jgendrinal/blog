@@ -4,13 +4,16 @@ author: 'Jose Francisco Endrinal'
 output: github_document
 ---
 
+
+
 ## Setup
 
-```{r}
+```{r message=FALSE, warning=FALSE}
 # Load packages
-
+suppressPackageStartupMessages({
+  library(tidyverse)})
 # Load dataset
-
+read_csv("data/clean/mrttraff.csv") -> mrt.dt
 ```
 
 ## First look at the dataset
