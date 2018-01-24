@@ -95,7 +95,7 @@ tt.sets
 
 
 ### Building the multinomial regression model
-
+We will use the nnet package for our multinomial logistic regression. We will structure it so that the output of this function is a model.  
 ```{r}
 mnom <- function(df){
   multinom(class ~ 
@@ -107,7 +107,9 @@ mnom <- function(df){
            data = df, 
            trace = FALSE)}
 ```
+We have enabled `trace` to be FALSE so that no messages will display.   
 
+Now for the predicting and response functions:  
 ```{r}
 mnom_predict <- function(model, df){
   preds <- predict(model, newdata = select(df, -class), type = "class")}
@@ -140,6 +142,7 @@ select(tt.sets, hit) %>%
   geom_density(fill = "#87CEFA")
 ```
 
+The distribution is not gaussian, but more scores ten toward a 95% accuracy on the part of this model.  
 
 ```{r echo=FALSE}
 rm(mnom, mnom_mscore, mnom_predict, mnom_response)
