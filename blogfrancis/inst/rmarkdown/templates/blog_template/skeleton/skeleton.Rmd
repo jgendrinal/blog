@@ -4,7 +4,7 @@ author: 'Jose Francisco Endrinal'
 output: github_document
 ---
 
-
+## Setup
 
 ```{r}
 # Load packages
@@ -13,26 +13,54 @@ output: github_document
 
 ```
 
+## First look at the dataset
+
+```{r}
+# View dataset
+```
 
 
-### Exploratory Data Analysis
+## Exploratory Data Analysis
+
+```{r}
+# Distribution of the class/target over the variable
+
+```
 
 
+## Feature Selection
 
-### Variable Omission
+```{r}
 
-
-
-### Model building
-
+```
 
 
-### Model training
+## Training and Testing Splits
+
+```{r}
+
+```
 
 
+## Model building
 
-### Model testing
+```{r}
 
+```
+
+
+## Model training
+
+```{r}
+
+```
+
+
+## Model testing
+
+```{r}
+
+```
 
 
 ***
