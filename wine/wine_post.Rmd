@@ -70,7 +70,7 @@ dil, hue and tot.Phen here look like they can divide the red and blue class well
 
 Using these variables, we'd like to know if a k-means model would work in separating these three classes well and how well we can improve it.  
 
-### Training and Testing Sets
+## Training and Testing Sets
 
 Like in our previous post, let us make 100 training and testing sets for our dataset. 
 ```{r}
@@ -96,7 +96,7 @@ tt.sets
 
 Now that we have the train and test sets, we can build our multinomial logistic regression model using the `nnet` package.  
 
-### Building the multinomial regression model
+## Building the multinomial regression model
 We will structure the function we will use to map the training sets so that the output of this function is a model. What makes this model different from the normal logistic regression model is that this model is for a class where the values are not 1 or 0. In this case, the values can be 1, 2, or 3.  
 
 ```{r}
@@ -156,7 +156,7 @@ The distribution is not gaussian, but more scores ten toward a ~95 percent  accu
 
 We visualize the effect of two variables on the regression and see if a clear joint relationship can be seen with regard to separation.  
 
-```{r}
+```{r eval=FALSE}
 select(wine, 
        class, 
        dil, 
@@ -169,7 +169,7 @@ select(wine,
     hue = scale(hue), 
     tot.Phen = scale(tot.Phen), 
     col.Int = scale(col.Int), 
-    proline = scale(proline)) %>% 
+    proline = scale(proline))
   
 ```
 

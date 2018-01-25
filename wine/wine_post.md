@@ -58,8 +58,8 @@ Let's see which variables we can use to divide the data classes. Unlike our prev
 Our visualization looks like the following:
 
 ``` r
-mutate(wine, class = as.character(class)) %>%
-  mutate_if(is.numeric, scale) %>% 
+mutate(wine, class = as.character(class)) %>% 
+  mutate_if(is.numeric, scale) %>% # change to z-scores
   gather(key, value, -class) %>% 
   ggplot(aes(x = value)) + 
   geom_density(aes(fill = class), position = "stack") + 
@@ -70,7 +70,10 @@ mutate(wine, class = as.character(class)) %>%
 
 dil, hue and tot.Phen here look like they can divide the red and blue class well. col.Int has the green and blue class on either side. proline differentiates the red and green class well. I'll try and think of a deliberate way to pick variables in this post, by this is the best I have so far. In the future, I'll be using feature selection methods that don't require expert judgement (filter, wrapper methods, etc.) and instead rely on statistical methods to weed out variables.
 
-Using these variables, we'd like to know if a k-means model would work in separating these three classes well and how well we can improve it. \#\#\# Training and Testing Sets
+Using these variables, we'd like to know if a k-means model would work in separating these three classes well and how well we can improve it.
+
+Training and Testing Sets
+-------------------------
 
 Like in our previous post, let us make 100 training and testing sets for our dataset.
 
@@ -110,7 +113,12 @@ tt.sets
     ## 10 <S3: resample> <S3: resample> 010   <int [124]> <int [~ <tibble~ <tibb~
     ## # ... with 90 more rows
 
-### Building the multinomial regression model
+Now that we have the train and test sets, we can build our multinomial logistic regression model using the `nnet` package.
+
+Building the multinomial regression model
+-----------------------------------------
+
+We will structure the function we will use to map the training sets so that the output of this function is a model. What makes this model different from the normal logistic regression model is that this model is for a class where the values are not 1 or 0. In this case, the values can be 1, 2, or 3.
 
 ``` r
 mnom <- function(df){
@@ -124,6 +132,10 @@ mnom <- function(df){
            trace = FALSE)}
 ```
 
+We have enabled `trace` to be `FALSE` so that no messages will display.
+
+Now for the predicting and response functions:
+
 ``` r
 mnom_predict <- function(model, df){
   preds <- predict(model, newdata = select(df, -class), type = "class")}
@@ -133,6 +145,8 @@ mnom_response <- function(df){
 
 Training and testing the model
 ------------------------------
+
+As in the same way we did it in my previous post, our recipe for training and testing our model will be done in the following way.
 
 ``` r
 # average score
@@ -151,8 +165,12 @@ score[[1]]
 
     ## [1] 0.9275926
 
+With an accuraccy of about ~93 percent, this model can still do better, but this is a great starting point for it.
+
 Distribution of scores
 ----------------------
+
+Let's see how densely the scores are together so that we can see how likely it is to have another score other than our ~93 percent average.
 
 ``` r
 select(tt.sets, hit) %>% 
@@ -161,3 +179,26 @@ select(tt.sets, hit) %>%
 ```
 
 ![](wine_post_files/figure-markdown_github/unnamed-chunk-9-1.png)
+
+The distribution is not gaussian, but more scores ten toward a ~95 percent accuracy on the part of this model.
+
+Visualizing the effect of a multinomial regression
+--------------------------------------------------
+
+We visualize the effect of two variables on the regression and see if a clear joint relationship can be seen with regard to separation.
+
+``` r
+select(wine, 
+       class, 
+       dil, 
+       hue, 
+       tot.Phen, 
+       col.Int, 
+       proline) %>% 
+  mutate(
+    dil = scale(dil), 
+    hue = scale(hue), 
+    tot.Phen = scale(tot.Phen), 
+    col.Int = scale(col.Int), 
+    proline = scale(proline))
+```
