@@ -1,10 +1,14 @@
 ---
-title: "MRT dataset"
+title: "The MRT dataset: A Case in Exploratory Data Analysis"
 author: 'Jose Francisco Endrinal'
 output: github_document
 ---
 
+The Metro Rail Transit (MRT) is a light rail transit system in Metro Manila, Philippines that runs along Epifanio delos Santos Avenue (EDSA) from Taft Avenue Station in Manila, to North Avenue Station in Quezon City. This dataset is the hourly traffic of passengers going in and out of turnstiles at the different train stations covering the years 2012 to 2014.  
 
+I cleaned up this dataset before I put it here so that we can do exploratory data analysis (EDA) straightaway. For the source code on how this was cleaned up, you can check out the link [here]().  
+
+Let's get started!  
 
 ## Setup
 
@@ -20,8 +24,28 @@ read_csv("data/clean/mrttraff.csv") -> mrt.dt
 
 ```{r}
 # View dataset
+mrt.dt
 ```
 
+This dataset shows the `year`, `month`, `day`, `station`, `hour`, as well as the number of people who have entered the station (`enter`) and who have exited (`exit`) as well the `net` entry/exit (+/-).  
+
+This dataset features all the stations of the MRT covering 24 hours.  
+
+```{r}
+unique(mrt.dt$station)
+```
+
+```{r}
+unique(mrt.dt$hour)
+```
+
+Looking at the averages for traffic `entry`, `exit`, and `net` overall, we have the following:
+
+```{r}
+summary(select(mrt.dt, entry, exit, net))
+```
+
+Our five number summaries give us the above.  
 
 ## Exploratory Data Analysis
 
