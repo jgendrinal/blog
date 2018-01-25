@@ -156,20 +156,16 @@ The distribution is not gaussian, but more scores ten toward a ~95 percent  accu
 
 We visualize the effect of two variables on the regression and see if a clear joint relationship can be seen with regard to separation.  
 
-```{r eval=FALSE}
+```{r}
+# Generate variable pair combinations of 2
 select(wine, 
-       class, 
        dil, 
        hue, 
        tot.Phen, 
        col.Int, 
        proline) %>% 
-  mutate(
-    dil = scale(dil), 
-    hue = scale(hue), 
-    tot.Phen = scale(tot.Phen), 
-    col.Int = scale(col.Int), 
-    proline = scale(proline))
+  tbl_vars %>% 
+  combn(2) -> value.prs
   
 ```
 
