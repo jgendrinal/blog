@@ -140,6 +140,12 @@ score[[1]]
 
 With an accuraccy of about ~93 percent, this model can still do better, but this is a great starting point for it.  
 
+```{r echo=FALSE}
+rm(mnom, mnom_mscore, mnom_predict, mnom_response)
+rm(score)
+```
+
+
 ## Distribution of scores
 
 Let's see how densely the scores are together so that we can see how likely it is to have another score other than our ~93 percent average.  
@@ -151,6 +157,11 @@ select(tt.sets, hit) %>%
 ```
 
 The distribution is not gaussian, but more scores ten toward a ~95 percent  accuracy on the part of this model.  
+
+```{r echo=FALSE}
+rm(tt.sets)
+```
+
 
 ## Visualizing the effect of a multinomial regression
 
@@ -165,13 +176,36 @@ select(wine,
        col.Int, 
        proline) %>% 
   tbl_vars %>% 
-  combn(2) -> value.prs
-  
+  combn(2) %>% 
+  as_tibble %>% 
+  gather %>% 
+  rename(pair = key) %>% 
+  mutate(elem = rep(c("X1", "X2"), 10)) %>% 
+  spread(key = elem, value = value) %>% 
+  select(-pair) -> value.prs
+# Function to extract value from wine dataset
+subset_frm_wine <- function(id, var) {
+  rescol <- wine[, var] %>% scale
+  res <- rescol[id]
+  as.numeric(unlist(res))}
+# Gather and spread to two 
+select(wine, 
+       class) %>% 
+  mutate(
+    class = as.character(class), 
+    id = 1:n()) %>% 
+  mutate(pairs = list(value.prs)) %>% 
+  unnest() %>% 
+  mutate(Y1 = map2_dbl(id, X1, subset_frm_wine), 
+         Y2 = map2_dbl(id, X2, subset_frm_wine)) %>% 
+  ggplot(aes(x = Y1, y = Y2)) + 
+  geom_point(aes(color = class)) + 
+  facet_grid(X1 ~ X2)
 ```
-
+No two 
 
 ```{r echo=FALSE}
-rm(mnom, mnom_mscore, mnom_predict, mnom_response)
-rm(score, tt.sets, wine)
+rm(subset_frm_wine)
+rm(value.prs, wine)
 ```
 
