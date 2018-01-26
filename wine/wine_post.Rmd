@@ -54,7 +54,7 @@ Looking at the dataset alone, we can see that most of these variables are contin
 
 ### Exploratory data analysis
 
-Let's see which variables we can use to divide the data classes. Unlike our previous post on the breast cancer dataset, this data is continuous data. Which means that we need to look at the smoothened distribution rather than the discrete occurences. 
+Let's see which variables we can use to divide the data classes. Unlike our previous post on the breast cancer dataset, this data is continuous data. Which means that we need to look at the smoothened distribution rather than the discrete occurences.  
 
 Our visualization looks like the following: 
 ```{r warning=FALSE}
@@ -66,13 +66,13 @@ mutate(wine, class = as.character(class)) %>%
   facet_wrap(~ key, ncol = 4)
 ```
 
-dil, hue and tot.Phen here look like they can divide the red and blue class well. col.Int has the green and blue class on either side. proline differentiates the red and green class well. I'll try and think of a deliberate way to pick variables in this post, by this is the best I have so far. In the future, I'll be using feature selection methods that don't require expert judgement (filter, wrapper methods, etc.) and instead rely on statistical methods to weed out variables. 
+dil, hue and tot.Phen here look like they can divide the red and blue class well. col.Int has the green and blue class on either side. proline differentiates the red and green class well. I'll try and think of a deliberate way to pick variables in a future post, by this is the best I have so far. In the future, I'll be using feature selection methods that don't require expert judgement (filter, wrapper methods, etc.) and instead rely on statistical methods to weed out variables. 
 
-Using these variables, we'd like to know if a k-means model would work in separating these three classes well and how well we can improve it.  
+Using these variables, we'd like to know if a multinomial logistic regression model would work in separating these three classes well and how well we can improve it.  
 
 ## Training and Testing Sets
 
-Like in our previous post, let us make 100 training and testing sets for our dataset. 
+Like in our previous post, let us make 100 training and testing sets for our dataset.  
 ```{r}
 set.seed(2387)
 tt.sets <- select(wine, 
@@ -156,7 +156,7 @@ select(tt.sets, hit) %>%
   geom_density(fill = "#87CEFA")
 ```
 
-The distribution is not gaussian, but more scores ten toward a ~95 percent  accuracy on the part of this model.  
+The distribution is not gaussian, but more scores ten toward a ~95 percent accuracy on the part of this model.  
 
 ```{r echo=FALSE}
 rm(tt.sets)
@@ -202,7 +202,9 @@ select(wine,
   geom_point(aes(color = class)) + 
   facet_grid(X1 ~ X2)
 ```
-No two 
+Whenever `proline` is used with variables like `col.Int`, `dil`, `hue`,  and `tot.Phen`, the classes (the dots) seem to separate nicely. I'm considering having interaction models for these variables in a future post, but now we know that these variables work really well to separate the classes, at least in the way we visualized them in 2D space.   
+
+Let's try doing that same visualization, but this time, we try to show where the points were classified correctly and incorrectly in this dataset.  
 
 ```{r echo=FALSE}
 rm(subset_frm_wine)
