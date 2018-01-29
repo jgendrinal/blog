@@ -50,7 +50,7 @@ read_csv("data/wine.csv") %>%
 ```{r echo=FALSE}
 wine
 ```
-Looking at the dataset alone, we can see that most of these variables are continuous. But we have too many characteristics to work with, hurting the insight we could gain. Let's try to do what we did last time with our [breast cancer dataset](../breastcancer/breastcancer_post1.md). We need to see if there may be an apparent way to separate the classes and the characteristics based on visualization alone. 
+Looking at the dataset alone, we can see that most of these variables are continuous. But we have too many characteristics to work with, hurting the insight we could gain. Let's try to do what we did last time with our [breast cancer dataset](). We need to see if there may be an apparent way to separate the classes and the characteristics based on visualization alone. 
 
 ### Exploratory data analysis
 
