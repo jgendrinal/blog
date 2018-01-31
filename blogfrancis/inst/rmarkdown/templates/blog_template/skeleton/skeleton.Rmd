@@ -30,6 +30,19 @@ output: github_document
 
 ## Feature Selection
 
+
+#### Test for Multicollinearity
+
+```{r}
+
+```
+
+#### Filter method
+```{r}
+
+```
+
+#### Wrapper method
 ```{r}
 
 ```
