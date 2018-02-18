@@ -55,41 +55,6 @@ Our five number summaries give us the above.
 ```
 
 
-## Feature Selection
-
-```{r}
-
-```
-
-
-## Training and Testing Splits
-
-```{r}
-
-```
-
-
-## Model building
-
-```{r}
-
-```
-
-
-## Model training
-
-```{r}
-
-```
-
-
-## Model testing
-
-```{r}
-
-```
-
-
 ***
 More dataset information: [[Dataset description]](link to website)  
 
