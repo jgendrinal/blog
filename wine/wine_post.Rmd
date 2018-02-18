@@ -141,8 +141,7 @@ score[[1]]
 With an accuraccy of about ~93 percent, this model can still do better, but this is a great starting point for it.  
 
 ```{r echo=FALSE}
-rm(mnom, mnom_mscore, mnom_predict, mnom_response)
-rm(score)
+rm(mnom, mnom_mscore, mnom_response, score)
 ```
 
 
@@ -202,12 +201,60 @@ select(wine,
   geom_point(aes(color = class)) + 
   facet_grid(X1 ~ X2)
 ```
+
 Whenever `proline` is used with variables like `col.Int`, `dil`, `hue`,  and `tot.Phen`, the classes (the dots) seem to separate nicely. I'm considering having interaction models for these variables in a future post, but now we know that these variables work really well to separate the classes, at least in the way we visualized them in 2D space.   
 
 Let's try doing that same visualization, but this time, we try to show where the points were classified correctly and incorrectly in this dataset.  
 
-```{r echo=FALSE}
-rm(subset_frm_wine)
-rm(value.prs, wine)
+```{r}
+# Simulated trained model for all data
+select(wine, 
+       dil, 
+       hue, 
+       tot.Phen, 
+       col.Int, 
+       proline, 
+       class) %>% 
+  multinom(class ~ 
+             dil + 
+             hue + 
+             tot.Phen + 
+             col.Int + 
+             proline, 
+           data = ., 
+           trace = FALSE) -> mnom_trained
+# Seeing how the model sees predicts the same data
+select(wine, 
+       dil, 
+       hue, 
+       tot.Phen, 
+       col.Int, 
+       proline, 
+       class) %>% 
+  mutate(id = 1:n(), 
+         pred = mnom_predict(mnom_trained, .), 
+         hit = pred == class) %>% 
+  mutate(pairs = list(value.prs)) %>% 
+  unnest() %>% 
+  mutate(Y1 = map2_dbl(id, X1, subset_frm_wine), 
+         Y2 = map2_dbl(id, X2, subset_frm_wine)) %>% 
+  arrange(desc(hit)) %>% 
+  ggplot(aes(x = Y1, y = Y2)) + 
+  geom_point(aes(color = hit)) + 
+  facet_grid(X1 ~ X2)
 ```
 
+We see that where the errors are are where the classes often mix. As is the usual case with these models. 
+
+```{r echo=FALSE}
+rm(mnom_predict, subset_frm_wine)
+rm(mnom_trained, value.prs, wine)
+```
+
+***
+More dataset information: [[Dataset description]](link to website)  
+
+Feedback:  
+Email: francis.endrinal@gmail.com  
+FB Messenger: m.me/transparencyman  
+Twitter, Instagram: @jgendrinal

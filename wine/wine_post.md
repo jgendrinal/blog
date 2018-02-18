@@ -2,12 +2,22 @@ Wasted on data: Exploring the wine dataset
 ================
 Jose Francisco Endrinal
 
-Whether you're a drinker or not, chances are that alcohol has played some part in the culture of where you live. It would be awesome to take measurements on any wine and be able to determine what kind of wine it was. In this dataset, we're sticking with three unidentified types of wine.
+Whether you’re a drinker or not, chances are that alcohol has played
+some part in the culture of where you live. It would be awesome to take
+measurements on any wine and be able to determine what kind of wine it
+was. In this dataset, we’re sticking with three unidentified types of
+wine.
 
-The wine dataset is a series of measurements of different samples of three types of wine. In this dataset, there are thirteen characteristics that were measured: 1. Alcohol 2. Malic acid 3. Ash 4. Alcalinity of ash
-5. Magnesium 6. Total phenols 7. Flavanoids 8. Nonflavanoid phenols 9. Proanthocyanins 10. Color intensity 11. Hue 12. OD280/OD315 of diluted wines 13. Proline
+The wine dataset is a series of measurements of different samples of
+three types of wine. In this dataset, there are thirteen characteristics
+that were measured: 1. Alcohol 2. Malic acid 3. Ash 4. Alcalinity of
+ash  
+5\. Magnesium 6. Total phenols 7. Flavanoids 8. Nonflavanoid phenols 9.
+Proanthocyanins 10. Color intensity 11. Hue 12. OD280/OD315 of diluted
+wines 13. Proline
 
-Unfortunately, we do not have the units of these measurements and simply have to rely on their relative values.
+Unfortunately, we do not have the units of these measurements and simply
+have to rely on their relative values.
 
 ``` r
 # Loading package
@@ -46,14 +56,22 @@ read_csv("data/wine.csv") %>%
     ##  8     1    14.1    2.15  2.61    17.6    121     2.60   2.51    0.310
     ##  9     1    14.8    1.64  2.17    14.0     97     2.80   2.98    0.290
     ## 10     1    13.9    1.35  2.27    16.0     98     2.98   3.15    0.220
-    ## # ... with 168 more rows, and 5 more variables: proanth <dbl>, col.Int
-    ## #   <dbl>, hue <dbl>, dil <dbl>, proline <int>
+    ## # ... with 168 more rows, and 5 more variables: proanth <dbl>,
+    ## #   col.Int <dbl>, hue <dbl>, dil <dbl>, proline <int>
 
-Looking at the dataset alone, we can see that most of these variables are continuous. But we have too many characteristics to work with, hurting the insight we could gain. Let's try to do what we did last time with our [breast cancer dataset](../breastcancer/breastcancer_post1.md). We need to see if there may be an apparent way to separate the classes and the characteristics based on visualization alone.
+Looking at the dataset alone, we can see that most of these variables
+are continuous. But we have too many characteristics to work with,
+hurting the insight we could gain. Let’s try to do what we did last time
+with our [breast cancer dataset](). We need to see if there may be an
+apparent way to separate the classes and the characteristics based on
+visualization alone.
 
 ### Exploratory data analysis
 
-Let's see which variables we can use to divide the data classes. Unlike our previous post on the breast cancer dataset, this data is continuous data. Which means that we need to look at the smoothened distribution rather than the discrete occurences.
+Let’s see which variables we can use to divide the data classes. Unlike
+our previous post on the breast cancer dataset, this data is continuous
+data. Which means that we need to look at the smoothened distribution
+rather than the discrete occurences.
 
 Our visualization looks like the following:
 
@@ -66,16 +84,24 @@ mutate(wine, class = as.character(class)) %>%
   facet_wrap(~ key, ncol = 4)
 ```
 
-![](wine_post_files/figure-markdown_github/unnamed-chunk-3-1.png)
+![](wine_post_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
 
-dil, hue and tot.Phen here look like they can divide the red and blue class well. col.Int has the green and blue class on either side. proline differentiates the red and green class well. I'll try and think of a deliberate way to pick variables in this post, by this is the best I have so far. In the future, I'll be using feature selection methods that don't require expert judgement (filter, wrapper methods, etc.) and instead rely on statistical methods to weed out variables.
+dil, hue and tot.Phen here look like they can divide the red and blue
+class well. col.Int has the green and blue class on either side. proline
+differentiates the red and green class well. I’ll try and think of a
+deliberate way to pick variables in a future post, by this is the best I
+have so far. In the future, I’ll be using feature selection methods that
+don’t require expert judgement (filter, wrapper methods, etc.) and
+instead rely on statistical methods to weed out variables.
 
-Using these variables, we'd like to know if a k-means model would work in separating these three classes well and how well we can improve it.
+Using these variables, we’d like to know if a multinomial logistic
+regression model would work in separating these three classes well and
+how well we can improve it.
 
-Training and Testing Sets
--------------------------
+## Training and Testing Sets
 
-Like in our previous post, let us make 100 training and testing sets for our dataset.
+Like in our previous post, let us make 100 training and testing sets for
+our dataset.
 
 ``` r
 set.seed(2387)
@@ -113,12 +139,16 @@ tt.sets
     ## 10 <S3: resample> <S3: resample> 010   <int [124]> <int [~ <tibble~ <tibb~
     ## # ... with 90 more rows
 
-Now that we have the train and test sets, we can build our multinomial logistic regression model using the `nnet` package.
+Now that we have the train and test sets, we can build our multinomial
+logistic regression model using the `nnet` package.
 
-Building the multinomial regression model
------------------------------------------
+## Building the multinomial regression model
 
-We will structure the function we will use to map the training sets so that the output of this function is a model. What makes this model different from the normal logistic regression model is that this model is for a class where the values are not 1 or 0. In this case, the values can be 1, 2, or 3.
+We will structure the function we will use to map the training sets so
+that the output of this function is a model. What makes this model
+different from the normal logistic regression model is that this model
+is for a class where the values are not 1 or 0. In this case, the values
+can be 1, 2, or 3.
 
 ``` r
 mnom <- function(df){
@@ -143,10 +173,10 @@ mnom_response <- function(df){
   df[["class"]]}
 ```
 
-Training and testing the model
-------------------------------
+## Training and testing the model
 
-As in the same way we did it in my previous post, our recipe for training and testing our model will be done in the following way.
+As in the same way we did it in my previous post, our recipe for
+training and testing our model will be done in the following way.
 
 ``` r
 # average score
@@ -165,12 +195,13 @@ score[[1]]
 
     ## [1] 0.9275926
 
-With an accuraccy of about ~93 percent, this model can still do better, but this is a great starting point for it.
+With an accuraccy of about ~93 percent, this model can still do better,
+but this is a great starting point for it.
 
-Distribution of scores
-----------------------
+## Distribution of scores
 
-Let's see how densely the scores are together so that we can see how likely it is to have another score other than our ~93 percent average.
+Let’s see how densely the scores are together so that we can see how
+likely it is to have another score other than our ~93 percent average.
 
 ``` r
 select(tt.sets, hit) %>% 
@@ -178,27 +209,112 @@ select(tt.sets, hit) %>%
   geom_density(fill = "#87CEFA")
 ```
 
-![](wine_post_files/figure-markdown_github/unnamed-chunk-9-1.png)
+![](wine_post_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
 
-The distribution is not gaussian, but more scores ten toward a ~95 percent accuracy on the part of this model.
+The distribution is not gaussian, but more scores ten toward a ~95
+percent accuracy on the part of this model.
 
-Visualizing the effect of a multinomial regression
---------------------------------------------------
+## Visualizing the effect of a multinomial regression
 
-We visualize the effect of two variables on the regression and see if a clear joint relationship can be seen with regard to separation.
+We visualize the effect of two variables on the regression and see if a
+clear joint relationship can be seen with regard to separation.
 
 ``` r
+# Generate variable pair combinations of 2
 select(wine, 
-       class, 
        dil, 
        hue, 
        tot.Phen, 
        col.Int, 
        proline) %>% 
+  tbl_vars %>% 
+  combn(2) %>% 
+  as_tibble %>% 
+  gather %>% 
+  rename(pair = key) %>% 
+  mutate(elem = rep(c("X1", "X2"), 10)) %>% 
+  spread(key = elem, value = value) %>% 
+  select(-pair) -> value.prs
+# Function to extract value from wine dataset
+subset_frm_wine <- function(id, var) {
+  rescol <- wine[, var] %>% scale
+  res <- rescol[id]
+  as.numeric(unlist(res))}
+# Gather and spread to two 
+select(wine, 
+       class) %>% 
   mutate(
-    dil = scale(dil), 
-    hue = scale(hue), 
-    tot.Phen = scale(tot.Phen), 
-    col.Int = scale(col.Int), 
-    proline = scale(proline))
+    class = as.character(class), 
+    id = 1:n()) %>% 
+  mutate(pairs = list(value.prs)) %>% 
+  unnest() %>% 
+  mutate(Y1 = map2_dbl(id, X1, subset_frm_wine), 
+         Y2 = map2_dbl(id, X2, subset_frm_wine)) %>% 
+  ggplot(aes(x = Y1, y = Y2)) + 
+  geom_point(aes(color = class)) + 
+  facet_grid(X1 ~ X2)
 ```
+
+![](wine_post_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+
+Whenever `proline` is used with variables like `col.Int`, `dil`, `hue`,
+and `tot.Phen`, the classes (the dots) seem to separate nicely. I’m
+considering having interaction models for these variables in a future
+post, but now we know that these variables work really well to separate
+the classes, at least in the way we visualized them in 2D space.
+
+Let’s try doing that same visualization, but this time, we try to show
+where the points were classified correctly and incorrectly in this
+dataset.
+
+``` r
+# Simulated trained model for all data
+select(wine, 
+       dil, 
+       hue, 
+       tot.Phen, 
+       col.Int, 
+       proline, 
+       class) %>% 
+  multinom(class ~ 
+             dil + 
+             hue + 
+             tot.Phen + 
+             col.Int + 
+             proline, 
+           data = ., 
+           trace = FALSE) -> mnom_trained
+# Seeing how the model sees predicts the same data
+select(wine, 
+       dil, 
+       hue, 
+       tot.Phen, 
+       col.Int, 
+       proline, 
+       class) %>% 
+  mutate(id = 1:n(), 
+         pred = mnom_predict(mnom_trained, .), 
+         hit = pred == class) %>% 
+  mutate(pairs = list(value.prs)) %>% 
+  unnest() %>% 
+  mutate(Y1 = map2_dbl(id, X1, subset_frm_wine), 
+         Y2 = map2_dbl(id, X2, subset_frm_wine)) %>% 
+  arrange(desc(hit)) %>% 
+  ggplot(aes(x = Y1, y = Y2)) + 
+  geom_point(aes(color = hit)) + 
+  facet_grid(X1 ~ X2)
+```
+
+![](wine_post_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+
+We see that where the errors are are where the classes often mix. As is
+the usual case with these models.
+
+-----
+
+More dataset information: [\[Dataset description\]](link%20to%20website)
+
+Feedback:  
+Email: <francis.endrinal@gmail.com>  
+FB Messenger: m.me/transparencyman  
+Twitter, Instagram: @jgendrinal
