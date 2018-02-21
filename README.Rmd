@@ -16,6 +16,9 @@ Breaking the breast cancer dataset with principal component analysis and logisti
 - *[Wine](wine/wine_post.md)*  
 Taking apart the wine dataset, doing multinomial logistical regression, and finding the distribution of scores.
 
+- *[Restarting and Clearning](environment/restart_and_clear.md)*  
+Why it's important to restart your R session and clear your console screen often.
+
 ### Templates
 
 [Blog post template](blogfrancis/inst/rmarkdown/templates/blog_template/skeleton/skeleton.Rmd)
