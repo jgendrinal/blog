@@ -17,7 +17,23 @@ Let's get started!
 suppressPackageStartupMessages({
   library(tidyverse)})
 # Load dataset
-read_csv("data/clean/mrttraff.csv") -> mrt.dt
+read_csv("data/clean/mrttraff.csv") %>% 
+  mutate(
+    station = parse_factor(station, 
+               c("taft", 
+                 "magallanes", 
+                 "ayala", 
+                 "buendia", 
+                 "guadalupe", 
+                 "boni", 
+                 "shaw", 
+                 "ortigas", 
+                 "santolan", 
+                 "cubao", 
+                 "gma", 
+                 "quezon", 
+                 "north"), 
+               ordered = TRUE)) -> mrt.dt
 ```
 
 ## First look at the dataset
@@ -57,9 +73,37 @@ select(mrt.dt, month, hour, station, entry, exit) %>%
   summarise(traff = mean(traff)) %>% 
   ungroup() %>% 
   ggplot(aes(x = hour, y = traff)) + 
-    geom_bar(aes(fill = mode), stat = "identity", 
+    geom_bar(aes(fill = mode), 
+             stat = "identity", 
              position = "stack") + 
     facet_wrap(~ station)
+```
+
+```{r}
+select(mrt.dt, month, hour, station, net) %>% 
+  group_by(station, month, hour) %>% 
+  summarise(net = mean(net)) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = hour, y = net)) + 
+  geom_bar(stat = "identity", 
+           fill = "skyblue") + 
+  ylim(-75000, 75000) + 
+  facet_wrap(~ station)
+```
+
+```{r}
+select(mrt.dt, month, hour, station, entry, exit) %>% 
+  mutate(avg = (entry + exit)/2) %>% 
+  select (-entry, -exit) %>% 
+  group_by(station, month, hour) %>% 
+  summarise(avg = mean(avg)) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = hour, y = avg)) + 
+  geom_bar(stat = "identity", 
+           position = "stack", 
+           fill = "skyblue") + 
+  ylim(0, 150000) + 
+  facet_wrap(~ station)
 ```
 
 
