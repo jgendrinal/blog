@@ -1,0 +1,45 @@
+---
+title: "Back to Iris: testing in R"
+author: 'Jose Francisco Endrinal'
+output: github_document
+---
+
+## Introduction
+
+## Setup
+
+```{r}
+# Load packages
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(testthat) # for unit tests
+  library(assertthat)}) # for function tests
+# Load dataset
+read_csv("data/iris.csv") -> iris.dt
+```
+
+## First look at the dataset
+
+```{r}
+# View dataset
+```
+
+
+## Exploratory Data Analysis
+
+```{r}
+# Distribution of the class/target over the variable
+
+```
+
+
+
+
+
+***
+More dataset information: [[Dataset description]](link to website)  
+
+Feedback:  
+Email: francis.endrinal@gmail.com  
+FB Messenger: m.me/transparencyman  
+Twitter, Instagram: @jgendrinal
