@@ -101,7 +101,7 @@ select(mrt.dt, month, hour, station, entry, exit) %>%
   ggplot(aes(x = hour, y = avg)) + 
   geom_bar(stat = "identity", 
            position = "stack", 
-           fill = "skyblue") + 
+           fill = "tan") + 
   ylim(0, 150000) + 
   facet_wrap(~ station)
 ```
