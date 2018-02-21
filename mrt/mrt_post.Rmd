@@ -51,7 +51,15 @@ Our five number summaries give us the above.
 
 ```{r}
 # Distribution of the class/target over the variable
-
+select(mrt.dt, month, hour, station, entry, exit) %>% 
+  gather(key = "mode", value = "traff", entry, exit) %>% 
+  group_by(station, month, hour, mode) %>% 
+  summarise(traff = mean(traff)) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = hour, y = traff)) + 
+    geom_bar(aes(fill = mode), stat = "identity", 
+             position = "stack") + 
+    facet_wrap(~ station)
 ```
 
 
