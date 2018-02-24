@@ -15,7 +15,8 @@ Let's get started!
 ```{r message=FALSE, warning=FALSE}
 # Load packages
 suppressPackageStartupMessages({
-  library(tidyverse)})
+  library(tidyverse)
+  library(lubridate)})
 # Load dataset
 read_csv("data/clean/mrttraff.csv") %>% 
   mutate(
@@ -105,6 +106,42 @@ select(mrt.dt, month, hour, station, entry, exit) %>%
   ylim(0, 150000) + 
   facet_wrap(~ station)
 ```
+
+Let's try and see the trends for entry and exit per station. Let's try 2012 first
+
+```{r}
+# Function to take the year and plot the station trends for that year
+take_year <- function(year_){
+  select(mrt.dt, -net) %>% 
+  filter(year == year_ & hour > 5 & hour < 22) %>% 
+  mutate(month = if_else(month < 10, str_c("0", month), as.character(month)), 
+         day = if_else(day < 10, str_c("0", day), as.character(day)), 
+         hour = if_else(hour < 10, str_c("0", hour), as.character(hour)), 
+         time = str_c(as.character(year), month, day, hour) %>% ymd_h) %>% 
+  select(-year, -month, -day, -hour) %>% 
+  gather(key = "mode", value = "traff", entry, exit) %>% 
+  ggplot(aes(time)) + 
+  geom_line(aes(y = traff, color = mode)) + 
+  facet_wrap(~station)
+}
+```
+
+
+```{r}
+take_year(2012)
+```
+
+Mostly even. 
+
+```{r}
+take_year(2013)
+```
+
+```{r}
+take_year(2014)
+```
+
+
 
 
 ***
