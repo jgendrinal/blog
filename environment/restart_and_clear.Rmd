@@ -13,11 +13,23 @@ This practice ensures that you always start from a clean slate when you run your
 
 ## Restarting
 
-Restarting deletes all the objects you have in your workspace. Basically, you start your R session as if nothing had happened in the past.  
+Restarting begins your R session as if nothing ever happened and deletes all the objects you have in your workspace. Basically, you start with a clean slate.    
 
-If you're on rstudio you can use the `.rs.restartR()` command in the console or use the following shortcuts:  
+If you're on rstudio you can use the `.rs.restartR()` command in the console or use the following Keyboard shortcuts depending on your OS:  
 
 `Ctrl+Shift+F10` for Windows and Linux  
-`Command+Shift+F10`  for MacOS
+`Command+Shift+F10` for MacOS
+
+#### Why this is important
+
+#### An Example
+
+
 
 ## Clearing
+
+Clearing your console keeps the distractions away. Basically you start with a clear screen, but you do not delete your environment objects.
+
+#### Why this is important
+
+#### An example
