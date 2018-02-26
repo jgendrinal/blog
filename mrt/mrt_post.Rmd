@@ -141,6 +141,29 @@ take_year(2013)
 take_year(2014)
 ```
 
+```{r}
+select(mrt.dt, year, station, hour, entry, exit) %>% 
+  gather(key = "mode", value = "traff", entry, exit) %>% 
+  filter(mode == "entry") %>% 
+  filter(year == 2012) %>% 
+  filter(hour > 4 & hour < 24) %>% 
+  ggplot(aes(hour, traff)) + 
+  geom_point(color = "#8A45B3", alpha = 0.25) + 
+  facet_wrap(~station)
+```
+
+```{r}
+select(mrt.dt, year, station, hour, entry, exit) %>% 
+  gather(key = "mode", value = "traff", entry, exit) %>% 
+  filter(mode == "exit") %>% 
+  filter(year == 2012) %>% 
+  filter(hour > 4 & hour < 24) %>% 
+  ggplot(aes(hour, traff)) + 
+  geom_point(color = "#76BA4C", alpha = 0.25) + 
+  facet_wrap(~station)
+```
+
+Would be interesting to check the distribution of traffic per hour per station.
 
 
 
