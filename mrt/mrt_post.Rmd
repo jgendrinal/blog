@@ -133,13 +133,15 @@ take_year(2012)
 
 Mostly even. 
 
-```{r}
+```{r warning=FALSE}
 take_year(2013)
 ```
 
 ```{r}
 take_year(2014)
 ```
+
+Notice that we have missing data for some periods. Will investigate at another time why this is the case. 
 
 ```{r}
 select(mrt.dt, year, station, hour, entry, exit) %>% 
@@ -166,9 +168,8 @@ select(mrt.dt, year, station, hour, entry, exit) %>%
 Would be interesting to check the distribution of traffic per hour per station.
 
 
-
 ***
-More dataset information: [[Dataset description]](link to website)  
+More dataset information: [MRT Daily dataset](https://www.gov.ph/data/dataset/metro-rail-transit-line-3-passenger-traffic-daily)  
 
 Feedback:  
 Email: francis.endrinal@gmail.com  
