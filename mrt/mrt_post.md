@@ -11,7 +11,10 @@ of turnstiles at the different train stations covering the years 2012 to
 
 I cleaned up this dataset before I put it here so that we can do
 exploratory data analysis (EDA) straightaway. For the source code on how
-this was cleaned up, you can check out the link [here]().
+this was cleaned up, you can check out the link [here](R/wrang.R).
+
+I’m not going to draw any insights from this dataset. I am simply going
+to decompose this dataset so I can figure out what to do with it later.
 
 Let’s get started\!
 

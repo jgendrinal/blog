@@ -6,7 +6,9 @@ output: github_document
 
 The Metro Rail Transit (MRT) is a light rail transit system in Metro Manila, Philippines that runs along Epifanio delos Santos Avenue (EDSA) from Taft Avenue Station in Manila, to North Avenue Station in Quezon City. This dataset is the hourly traffic of passengers going in and out of turnstiles at the different train stations covering the years 2012 to 2014.  
 
-I cleaned up this dataset before I put it here so that we can do exploratory data analysis (EDA) straightaway. For the source code on how this was cleaned up, you can check out the link [here]().  
+I cleaned up this dataset before I put it here so that we can do exploratory data analysis (EDA) straightaway. For the source code on how this was cleaned up, you can check out the link [here](R/wrang.R).  
+
+I'm not going to draw any insights from this dataset. I am simply going to decompose this dataset so I can figure out what to do with it later.  
 
 Let's get started!  
 
