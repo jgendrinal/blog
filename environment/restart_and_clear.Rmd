@@ -15,16 +15,67 @@ This practice ensures that you always start from a clean slate when you run your
 
 Restarting begins your R session as if nothing ever happened and deletes all the objects you have in your workspace. Basically, you start with a clean slate.    
 
-If you're on rstudio you can use the `.rs.restartR()` command in the console or use the following Keyboard shortcuts depending on your OS:  
+If you're on Rstudio you can use the `.rs.restartR()` command in the console or use the following Keyboard shortcuts depending on your OS:  
 
 `Ctrl+Shift+F10` for Windows and Linux  
 `Command+Shift+F10` for MacOS
 
 #### Why this is important
 
+R stores all your created R objects (often functions, variables and data) in a workspace environment in your current R session. And chances are, you won't be in your R session if you won't be using and transforming these objects.  
+
+What's important is that these objects do not stand alone. Otherwise, it becomes difficult to recreate them and modify them. And for other people who want to check your analysis, it won't be clear how your objects are created if they only exist in the R workspace. 
+
+To solve these problems, These objects have to have their origin in *code*. You have to be able to trace every object you create to a script or R markdown file somewhere in your project.  
+
+To ensure that your code does what it does, it helps that your console always starts on a clean slate. Doing this ensures two things:  
+1. It makes sure that your R console only relies on the objects generated or called by your script.  
+2. It will force you to code all the R objects you will be needing and not solely depend on the workspace.
+
+**Restart your console and restart it often.** 
+
 #### An Example
 
+```{r example, echo=FALSE, warning=FALSE, message=FALSE}
+library(tidyverse)
 
+load("data/example.RData")
+```
+
+Let's say David wants to make a new analysis on his dataset, `df`. He wants to do it on a new R script.  
+
+Thinking that his data is already on his workspace, he decides to only code the analysis and not write the code generating the dataset he wants to work with. As you will expect, he does not restart his console.  
+
+This is what his analysis looks like:  
+```{r}
+# My regression
+rel_lm <- lm(y ~ x, data = df)
+```
+
+David has created a new object called `rel_lm` which is a linear model of his dataset `df`. He uses `summary` to check the significance of variable x on his model.  
+
+```{r}
+summary(rel_lm)
+```
+
+Luckily for David, his regression shows promising results.  
+
+He then decides to share his results with a colleague, Jonathan. Jonathan does not believe in the results so he asks for a copy of the code that David made.  
+
+But what happens when Jonathan runs the code? Remember, he does not have the workspace that David has. And because David did not restart his console, he did not see that his analysis depended on the R object `df`. 
+
+Here's what it looks like when Jonathan ran the same code. 
+
+```{r echo=FALSE}
+.rs.restartR()
+```
+
+```{r}
+# My regression
+rel_lm <- lm(y ~ x, data = df)
+summary(rel_lm)
+```
+The analysis returns an error. Because the object `df` is not on Jonathan's workspace, he cannot run the regression needed to see the results. 
 
 ## Clearing
 
