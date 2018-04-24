@@ -79,8 +79,22 @@ The analysis returns an error. Because the object `df` is not on Jonathan's work
 
 ## Clearing
 
-Clearing your console keeps the distractions away. Basically you start with a clear screen, but you do not delete your environment objects.
+Clearing your console keeps the distractions away. Basically you start with a clear screen, but you do not delete your environment objects. 
+
+You don't want to look at the console and think you still have objects that you can use. Clear your screen to clear away all that clutter. 
+
+You can type the command `cat("\014")` on the console or you can use `Ctrl+L`. This works for all operating systems.  
 
 #### Why this is important
 
-#### An example
+I wish R started the console without any text and just the cursor. The text in the console for a frequent R user is incredibly distracting. It would be better to clear it out.  
+
+Here's how the screen looks like.  
+
+![](img/console.png)  
+
+And here's how the screen looks like when it's cleared:  
+
+![](img/console2.png)  
+
+Doesn't this look better?  
