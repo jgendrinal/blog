@@ -2,23 +2,16 @@ The MRT dataset: A Case in Exploratory Data Analysis
 ================
 Jose Francisco Endrinal
 
-The Metro Rail Transit (MRT) is a light rail transit system in Metro
-Manila, Philippines that runs along Epifanio delos Santos Avenue (EDSA)
-from Taft Avenue Station in Manila, to North Avenue Station in Quezon
-City. This dataset is the hourly traffic of passengers going in and out
-of turnstiles at the different train stations covering the years 2012 to
-2014.
+The Metro Rail Transit (MRT) is a light rail transit system in Metro Manila, Philippines that runs along Epifanio delos Santos Avenue (EDSA) from Taft Avenue Station in Manila, to North Avenue Station in Quezon City. This dataset is the hourly traffic of passengers going in and out of turnstiles at the different train stations covering the years 2012 to 2014.
 
-I cleaned up this dataset before I put it here so that we can do
-exploratory data analysis (EDA) straightaway. For the source code on how
-this was cleaned up, you can check out the link [here](R/wrang.R).
+I cleaned up this dataset before I put it here so that we can do exploratory data analysis (EDA) straightaway. For the source code on how this was cleaned up, you can check out the link [here](R/wrang.R).
 
-I’m not going to draw any insights from this dataset. I am simply going
-to decompose this dataset so I can figure out what to do with it later.
+I'm not going to draw any insights from this dataset. I am simply going to decompose this dataset so I can figure out what to do with it later.
 
-Let’s get started\!
+Let's get started!
 
-## Setup
+Setup
+-----
 
 ``` r
 # Load packages
@@ -45,7 +38,8 @@ read_csv("data/clean/mrttraff.csv") %>%
                ordered = TRUE)) -> mrt.dt
 ```
 
-## First look at the dataset
+First look at the dataset
+-------------------------
 
 ``` r
 # View dataset
@@ -67,12 +61,9 @@ mrt.dt
     ## 10  2012     1     1 ayala      10   253   577  -324
     ## # ... with 294,518 more rows
 
-This dataset shows the `year`, `month`, `day`, `station`, `hour`, as
-well as the number of people who have entered the station (`enter`) and
-who have exited (`exit`) as well the `net` entry/exit (+/-).
+This dataset shows the `year`, `month`, `day`, `station`, `hour`, as well as the number of people who have entered the station (`enter`) and who have exited (`exit`) as well the `net` entry/exit (+/-).
 
-This dataset features all the stations of the MRT covering 24
-    hours.
+This dataset features all the stations of the MRT covering 24 hours.
 
 ``` r
 unique(mrt.dt$station)
@@ -90,8 +81,7 @@ unique(mrt.dt$hour)
     ##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
     ## [24] 24
 
-Looking at the averages for traffic `entry`, `exit`, and `net` overall,
-we have the following:
+Looking at the averages for traffic `entry`, `exit`, and `net` overall, we have the following:
 
 ``` r
 summary(select(mrt.dt, entry, exit, net))
@@ -107,7 +97,8 @@ summary(select(mrt.dt, entry, exit, net))
 
 Our five number summaries give us the above.
 
-## Exploratory Data Analysis
+Exploratory Data Analysis
+-------------------------
 
 ``` r
 # Distribution of the class/target over the variable
@@ -123,7 +114,7 @@ select(mrt.dt, month, hour, station, entry, exit) %>%
     facet_wrap(~ station)
 ```
 
-![](mrt_post_files/figure-gfm/unnamed-chunk-6-1.png)<!-- -->
+![](mrt_post_files/figure-markdown_github/unnamed-chunk-6-1.png)
 
 ``` r
 select(mrt.dt, month, hour, station, net) %>% 
@@ -137,7 +128,7 @@ select(mrt.dt, month, hour, station, net) %>%
   facet_wrap(~ station)
 ```
 
-![](mrt_post_files/figure-gfm/unnamed-chunk-7-1.png)<!-- -->
+![](mrt_post_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 ``` r
 select(mrt.dt, month, hour, station, entry, exit) %>% 
@@ -154,10 +145,9 @@ select(mrt.dt, month, hour, station, entry, exit) %>%
   facet_wrap(~ station)
 ```
 
-![](mrt_post_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+![](mrt_post_files/figure-markdown_github/unnamed-chunk-8-1.png)
 
-Let’s try and see the trends for entry and exit per station. Let’s try
-2012 first
+Let's try and see the trends for entry and exit per station. Let's try 2012 first
 
 ``` r
 # Function to take the year and plot the station trends for that year
@@ -180,7 +170,7 @@ take_year <- function(year_){
 take_year(2012)
 ```
 
-![](mrt_post_files/figure-gfm/unnamed-chunk-10-1.png)<!-- -->
+![](mrt_post_files/figure-markdown_github/unnamed-chunk-10-1.png)
 
 Mostly even.
 
@@ -188,16 +178,15 @@ Mostly even.
 take_year(2013)
 ```
 
-![](mrt_post_files/figure-gfm/unnamed-chunk-11-1.png)<!-- -->
+![](mrt_post_files/figure-markdown_github/unnamed-chunk-11-1.png)
 
 ``` r
 take_year(2014)
 ```
 
-![](mrt_post_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
+![](mrt_post_files/figure-markdown_github/unnamed-chunk-12-1.png)
 
-Notice that we have missing data for some periods. Will investigate at
-another time why this is the case.
+Notice that we have missing data for some periods. Will investigate at another time why this is the case.
 
 ``` r
 select(mrt.dt, year, station, hour, entry, exit) %>% 
@@ -210,7 +199,7 @@ select(mrt.dt, year, station, hour, entry, exit) %>%
   facet_wrap(~station)
 ```
 
-![](mrt_post_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
+![](mrt_post_files/figure-markdown_github/unnamed-chunk-13-1.png)
 
 ``` r
 select(mrt.dt, year, station, hour, entry, exit) %>% 
@@ -223,17 +212,15 @@ select(mrt.dt, year, station, hour, entry, exit) %>%
   facet_wrap(~station)
 ```
 
-![](mrt_post_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
+![](mrt_post_files/figure-markdown_github/unnamed-chunk-14-1.png)
 
-Would be interesting to check the distribution of traffic per hour per
-station.
+Would be interesting to check the distribution of traffic per hour per station.
 
------
+------------------------------------------------------------------------
 
-More dataset information: [MRT Daily
-dataset](https://www.gov.ph/data/dataset/metro-rail-transit-line-3-passenger-traffic-daily)
+More dataset information: [MRT Daily dataset](https://www.gov.ph/data/dataset/metro-rail-transit-line-3-passenger-traffic-daily)
 
-Feedback:  
-Email: <francis.endrinal@gmail.com>  
-FB Messenger: m.me/transparencyman  
+Feedback:
+Email: <francis.endrinal@gmail.com>
+FB Messenger: m.me/transparencyman
 Twitter, Instagram: @jgendrinal
