@@ -67,13 +67,12 @@ But what happens when Jonathan runs the code? Remember, he does not have the wor
 Here's what it looks like when Jonathan ran the same code. 
 
 ```{r echo=FALSE}
-.rs.restartR()
+rm(df)
 ```
 
-```{r}
+```{r error=TRUE}
 # My regression
 rel_lm <- lm(y ~ x, data = df)
-summary(rel_lm)
 ```
 The analysis returns an error. Because the object `df` is not on Jonathan's workspace, he cannot run the regression needed to see the results. 
 
