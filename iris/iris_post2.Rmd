@@ -6,6 +6,10 @@ output: github_document
 
 ## Introduction
 
+Testing your code seems to be an important part of the data analysis process. For one, every step of processing data works under certain assumptions. It's not always the case that those assumptions are true. And when your assumptions are not in check, the steps in your analysis break down.  
+
+Another reason to test your code is that models also have the same assumption. In linear regression alone, there are five major assumptions that you have to keep in order to the results of linear regression to be unbiased. Testing your code ensures that the model fulfills all those assumptions.  
+
 ## Setup
 
 ```{r}
