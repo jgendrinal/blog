@@ -4,6 +4,8 @@ author: 'Jose Francisco Endrinal'
 output: github_document
 ---
 
+*DISCLAIMER: I am not a working data analyst, nor am I a data scientist. As such, the code, techniques, and methods used in this blog post do not qualify as industry-level code, techniques, and methods. This blog and its corresponding github repository are meant to document my progress as I come to learn the techniques and skills a data analyst or data scientist will be needing in their line of work. This style of learning is popularly called "Learning in Public"*  
+
 ## Introduction
 
 Testing your code seems to be an important part of the data analysis process. For one, every step of processing data works under certain assumptions. It's not always the case that those assumptions are true. And when your assumptions are not in check, the steps in your analysis break down.  
