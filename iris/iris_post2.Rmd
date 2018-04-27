@@ -79,6 +79,39 @@ test_that("Petal lengths are normally distributed", {
   expect_lt(versicolor$p.value, 0.05)
   expect_lt(virginica$p.value, 0.05)
 })
+test_that("Petal widths are normally distributed", {
+  filter(iris.dt, class == "setosa")[["p_width"]] %>% 
+    shapiro.test(.) -> setosa
+  filter(iris.dt, class == "versicolor")[["p_width"]] %>% 
+    shapiro.test(.) -> versicolor
+  filter(iris.dt, class == "virginica")[["p_width"]] %>% 
+    shapiro.test(.) -> virginica
+  expect_lt(setosa$p.value, 0.05)
+  expect_lt(versicolor$p.value, 0.05)
+  expect_lt(virginica$p.value, 0.05)
+})
+test_that("Sepal lengths are normally distributed", {
+  filter(iris.dt, class == "setosa")[["s_length"]] %>% 
+    shapiro.test(.) -> setosa
+  filter(iris.dt, class == "versicolor")[["s_length"]] %>% 
+    shapiro.test(.) -> versicolor
+  filter(iris.dt, class == "virginica")[["s_length"]] %>% 
+    shapiro.test(.) -> virginica
+  expect_lt(setosa$p.value, 0.05)
+  expect_lt(versicolor$p.value, 0.05)
+  expect_lt(virginica$p.value, 0.05)
+})
+test_that("Sepal widths are normally distributed", {
+  filter(iris.dt, class == "setosa")[["s_width"]] %>% 
+    shapiro.test(.) -> setosa
+  filter(iris.dt, class == "versicolor")[["s_width"]] %>% 
+    shapiro.test(.) -> versicolor
+  filter(iris.dt, class == "virginica")[["s_width"]] %>% 
+    shapiro.test(.) -> virginica
+  expect_lt(setosa$p.value, 0.05)
+  expect_lt(versicolor$p.value, 0.05)
+  expect_lt(virginica$p.value, 0.05)
+})
 ```
 
 
