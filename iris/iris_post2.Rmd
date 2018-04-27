@@ -22,19 +22,31 @@ We'll be trying to use `testthat` and `assertthat` in this post to test a prelim
 
 ## Setup
 
-```{r}
+```{r setup warning=FALSE, message=FALSE}
 # Load packages
 suppressPackageStartupMessages({
   library(tidyverse)
   library(testthat) # for unit tests
   library(assertthat)}) # for function tests
 # Load dataset
-read_csv("data/iris.csv") -> iris.dt
+read_csv("data/iris.csv") %>% 
+  # Rename to better variable names
+  rename(p_length = X1, 
+         s_length = X2, 
+         p_width = X3, 
+         s_width = X4, 
+         class = X5) %>% 
+  # Remove `Iris-` from class
+  mutate(
+    class = recode(class, 
+                   "Iris-setosa" = "setosa", 
+                   "Iris-versicolor"= "versicolor", 
+                   "Iris-virginica" = "virginica")) -> iris.dt
 ```
 
 ## First look at the dataset
 
-```{r}
+```{r firstlook}
 # View dataset
 iris.dt
 ```
@@ -44,9 +56,14 @@ iris.dt
 
 ```{r}
 # Distribution of the class/target over the variable
-
+gather(iris.dt, key = "measure", value = "value", -class) %>% 
+  ggplot(aes(value)) + 
+  geom_density(aes(fill = class, 
+                   color = class), 
+               alpha = 0.5, 
+               position = "identity") + 
+  facet_wrap(~ measure)
 ```
-
 
 
 
