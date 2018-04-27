@@ -14,6 +14,12 @@ This project serves as a Github link to my [blog](https://medium.com/@jgendrinal
 -   *[Wine](wine/wine_post.md)*
     Taking apart the wine dataset, doing multinomial logistical regression, and finding the distribution of scores.
 
+-   *[Restarting and Clearning](environment/restart_and_clear.md)*
+    Why it's important to restart your R session and clear your console screen often.
+
+-   *[MRT dataset](mrt/mrt_post.md)*
+    Hacking the MRT dataset and looking for clues before programming.
+
 ### Templates
 
 [Blog post template](blogfrancis/inst/rmarkdown/templates/blog_template/skeleton/skeleton.Rmd)
