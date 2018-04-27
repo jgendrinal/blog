@@ -54,7 +54,7 @@ iris.dt
 
 ## Exploratory Data Analysis
 
-```{r}
+```{r eda}
 # Distribution of the class/target over the variable
 gather(iris.dt, key = "measure", value = "value", -class) %>% 
   ggplot(aes(value)) + 
@@ -65,6 +65,21 @@ gather(iris.dt, key = "measure", value = "value", -class) %>%
   facet_wrap(~ measure)
 ```
 
+## Testing our data
+
+```{r testdata, error=TRUE}
+test_that("Petal lengths are normally distributed", {
+  filter(iris.dt, class == "setosa")[["p_length"]] %>% 
+    shapiro.test(.) -> setosa
+  filter(iris.dt, class == "versicolor")[["p_length"]] %>% 
+    shapiro.test(.) -> versicolor
+  filter(iris.dt, class == "virginica")[["p_length"]] %>% 
+    shapiro.test(.) -> virginica
+  expect_lt(setosa$p.value, 0.05)
+  expect_lt(versicolor$p.value, 0.05)
+  expect_lt(virginica$p.value, 0.05)
+})
+```
 
 
 
