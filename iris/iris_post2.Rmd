@@ -68,6 +68,8 @@ gather(iris.dt, key = "measure", value = "value", -class) %>%
 ## Testing our data
 
 ```{r testdata, error=TRUE}
+context("Features are normally distributed")
+
 test_that("Petal lengths are normally distributed", {
   filter(iris.dt, class == "setosa")[["p_length"]] %>% 
     shapiro.test(.) -> setosa
@@ -75,9 +77,9 @@ test_that("Petal lengths are normally distributed", {
     shapiro.test(.) -> versicolor
   filter(iris.dt, class == "virginica")[["p_length"]] %>% 
     shapiro.test(.) -> virginica
-  expect_lt(setosa$p.value, 0.05)
-  expect_lt(versicolor$p.value, 0.05)
-  expect_lt(virginica$p.value, 0.05)
+  expect_gt(setosa$p.value, 0.05)
+  expect_gt(versicolor$p.value, 0.05)
+  expect_gt(virginica$p.value, 0.05)
 })
 test_that("Petal widths are normally distributed", {
   filter(iris.dt, class == "setosa")[["p_width"]] %>% 
@@ -86,9 +88,9 @@ test_that("Petal widths are normally distributed", {
     shapiro.test(.) -> versicolor
   filter(iris.dt, class == "virginica")[["p_width"]] %>% 
     shapiro.test(.) -> virginica
-  expect_lt(setosa$p.value, 0.05)
-  expect_lt(versicolor$p.value, 0.05)
-  expect_lt(virginica$p.value, 0.05)
+  expect_gt(setosa$p.value, 0.05)
+  expect_gt(versicolor$p.value, 0.05)
+  expect_gt(virginica$p.value, 0.05)
 })
 test_that("Sepal lengths are normally distributed", {
   filter(iris.dt, class == "setosa")[["s_length"]] %>% 
@@ -97,9 +99,9 @@ test_that("Sepal lengths are normally distributed", {
     shapiro.test(.) -> versicolor
   filter(iris.dt, class == "virginica")[["s_length"]] %>% 
     shapiro.test(.) -> virginica
-  expect_lt(setosa$p.value, 0.05)
-  expect_lt(versicolor$p.value, 0.05)
-  expect_lt(virginica$p.value, 0.05)
+  expect_gt(setosa$p.value, 0.05)
+  expect_gt(versicolor$p.value, 0.05)
+  expect_gt(virginica$p.value, 0.05)
 })
 test_that("Sepal widths are normally distributed", {
   filter(iris.dt, class == "setosa")[["s_width"]] %>% 
@@ -108,13 +110,39 @@ test_that("Sepal widths are normally distributed", {
     shapiro.test(.) -> versicolor
   filter(iris.dt, class == "virginica")[["s_width"]] %>% 
     shapiro.test(.) -> virginica
-  expect_lt(setosa$p.value, 0.05)
-  expect_lt(versicolor$p.value, 0.05)
-  expect_lt(virginica$p.value, 0.05)
+  expect_gt(setosa$p.value, 0.05)
+  expect_gt(versicolor$p.value, 0.05)
+  expect_gt(virginica$p.value, 0.05)
 })
 ```
 
+We seem to have a problem with sepal lengths from setosa and versicolor. Let's get really close and see what the problem is: 
 
+```{r}
+# Distribution of iris classes over s_widths
+gather(iris.dt, key = "measure", value = "value", -class) %>% 
+  filter(measure == "s_width") %>% 
+  ggplot(aes(value)) + 
+  geom_density(aes(fill = class, 
+                   color = class), 
+               alpha = 0.5, 
+               position = "identity")
+```
+
+setosa is really chaotic while versicolor has two peaks. Virginica is flatter which makes it more or less more normal.  
+
+setosa might be erratic because it is the closest to zero. Let's filter out setosa and get the summary statistics.  
+
+```{r}
+filter(iris.dt, class %in% c("setosa")) %>% 
+  select(s_width) %>% 
+  summary
+filter(iris.dt, class %in% c("versicolor")) %>% 
+  select(s_width) %>% 
+  summary
+```
+
+We have to smoothen this dataset so we can make a fair model out of it.  
 
 ***
 More dataset information: [[Dataset description]](link to website)  
