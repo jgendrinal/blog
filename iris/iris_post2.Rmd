@@ -24,6 +24,8 @@ We'll be trying to use `testthat` in this post to test whether our variables are
 
 ## Setup
 
+We load our standard packages which include `tidyverse` and `testthat`. We read in our iris dataset and give it tidy names and recode any weird values.  
+
 ```{r setup warning=FALSE, message=FALSE}
 # Load packages
 suppressPackageStartupMessages({
@@ -52,6 +54,9 @@ read_csv("data/iris.csv") %>%
 iris.dt
 ```
 
+Same dataset as in a previous [post](https://medium.com/@jgendrinal/exploring-the-iris-dataset-260cc1e5cdf7). The same sort of features.  
+
+To give a more visual look at this dataset ...  
 
 ## Exploratory Data Analysis
 
@@ -66,7 +71,19 @@ gather(iris.dt, key = "measure", value = "value", -class) %>%
   facet_wrap(~ measure)
 ```
 
+Here is the target over the other variables and how they are distributed. They seem to center on different points for each specie of iris, and they seem to be bell-shaped.  
+
+Now, let's try testing our dataset for whether each feature for each specie of iris is normally distributed.  
+
 ## Testing our data
+
+In R, there is a test called the Shapiro test which tries to find out whether the distribution of a set of values is statistically different from a normal distribution. When doing statistical tests, we usually generate a test statistic and convert it into what's called a p-value. Roughly, speaking, this p-value is the probability that there is data less than the data. I won't get into the details here of how to derive the p-value and what it's about, but if you're interested in really really understanding it, I would recommend that you look into [this article](http://daniellakens.blogspot.sg/2017/12/understanding-common-misconceptions.html) and download [this paper](https://link.springer.com/article/10.1007/s10654-016-0149-3).  
+
+We invoke this test in R using the command `shapiro.test()` and we use `$p.value` to extract the p-value in this example.  
+
+For simplicity's sake, we arbitrarily set the value for "statistically different" to be less than 0.05. This means that if the test returns anything greater than 0.05, we consider it as not statistically different from a normal distribution.  
+
+Here's our test code:  
 
 ```{r testdata, error=TRUE}
 context("Features are normally distributed")
