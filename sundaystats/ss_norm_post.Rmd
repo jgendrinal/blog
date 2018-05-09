@@ -1,0 +1,42 @@
+---
+title: "#SundayStats: A deep dive into the stats package in R - The Normal Distribution"
+author: 'Jose Francisco Endrinal'
+output: github_document
+---
+
+*DISCLAIMER: I am not a working data analyst, nor am I a data scientist. As such, the code, techniques, and methods used in this blog post do not qualify as industry-level code, techniques, and methods. This blog and its corresponding github repository are meant to document my progress as I come to learn the techniques and skills a data analyst or data scientist will be needing in their line of work. This style of learning is popularly called "Learning in Public"*
+
+## Introduction
+
+*\#SundayStats is a weekly post on this blog about the default `stats` package in R. Each week, I will be working with one function/group of functions in this package and will talk about how to use it in a practical setting.*  
+
+If you've taken a statistics class, you probably know about the normal distribution. Put simply, it's usually how frequent continuous (quantitative, measureable) data points would occur when the number of things you measure gets very large (massive oversimplifying here, trying to talk to a general audience).  
+On your x-axis, you have a the quantity you are trying to measure. On the y-axis, its how likely you are to find these data points. 
+
+## Sample dataset
+
+```{r}
+# Generate/import dataset
+```
+
+## Looking at the function
+
+```{r}
+# show function/s with all their attributes
+```
+
+## Output
+
+```{r}
+# Visualize/print output
+```
+
+***
+More dataset information: [[Dataset description]](link to website)  
+
+If you liked this blog post, feel free to give me a clap!  
+
+If you'd like to give feedback, you can reach out to me at:  
+Email: francis.endrinal@gmail.com  
+FB Messenger: m.me/transparencyman  
+Twitter, Instagram: @jgendrinal
