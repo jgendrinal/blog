@@ -18,7 +18,9 @@ Another reason to test your code is that models also have the same assumption. I
 
 There are two testing packages in R `assertthat` and `testthat`. `assertthat` gives modules to test particular functions. These tests help ensure that the code receives the right inputs for the function to work. `testthat` is a package for what are called unit tests, which tests the outputs of certain function for any condition you give it.  
 
-We'll be trying to use `testthat` and `assertthat` in this post to test a prelimenary model for the iris dataset on the first blog post.  
+Testing is not only good for code functions. It's also good for data and for models. In this [paper](https://ai.google/research/pubs/pub45742) by Google, they show where it is important to test your data analysis pipeline. One of the tests they recommend is to test your data to make sure they are distributed as expected.  
+
+We'll be trying to use `testthat` in this post to test whether our variables are normally distributed.  
 
 ## Setup
 
@@ -26,8 +28,7 @@ We'll be trying to use `testthat` and `assertthat` in this post to test a prelim
 # Load packages
 suppressPackageStartupMessages({
   library(tidyverse)
-  library(testthat) # for unit tests
-  library(assertthat)}) # for function tests
+  library(testthat)}) # for unit tests
 # Load dataset
 read_csv("data/iris.csv") %>% 
   # Rename to better variable names
