@@ -11,18 +11,36 @@ output: github_document
 *\#SundayStats is a weekly post on this blog about the default `stats` package in R. Each week, I will be working with one function/group of functions in this package and will talk about how to use it in a practical setting.*  
 
 If you've taken a statistics class, you probably know about the normal distribution. Put simply, it's usually how frequent continuous (quantitative, measureable) data points would occur when the number of things you measure gets very large (massive oversimplifying here, trying to talk to a general audience).  
-On your x-axis, you have a the quantity you are trying to measure. On the y-axis, its how likely you are to find these data points. 
-
-## Sample dataset
+On your x-axis, you have a the quantity you are trying to measure. On the y-axis, its how likely you are to find these data points.  
 
 ```{r}
-# Generate/import dataset
+suppressPackageStartupMessages({
+  library(tidyverse)})
 ```
 
-## Looking at the function
+
+## Using rnorm() to generate a normally distributed dataset
+
+```{r}
+# Generate dataset
+set.seed(2387)
+df <- rnorm(n = 150, mean = 0, sd = 1)
+```
+
+Let's plot df:  
+
+```{r}
+ggplot(data_frame(df = df), aes(df)) + 
+  geom_density(fill = "#4529A3", color = "#4529A3", alpha = 0.25)
+```
+
+Somewhat normal. Good enough.  
+
+## Using pnorm() to generate a normally distributed function with quantiles
 
 ```{r}
 # show function/s with all their attributes
+df <- 
 ```
 
 ## Output
