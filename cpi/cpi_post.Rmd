@@ -8,14 +8,15 @@ output: github_document
 
 ## Setup
 
-```{r message=FALSE, warning=FALSE}
+```{r warning=FALSE, message=FALSE}
 # Load packages
 library(tidyverse)
 # Load dataset
 read_csv("data/CPI_2006=100_1994-2018_2.csv") %>% 
   select(-`Geographic code`, 
-         -`Geographic code_1`, 
-         -`Geographic Location`) %>% 
+         -`Geographic code_1`) %>% 
+  filter(`Geographic Location` == "Philippines") %>% 
+  select(-`Geographic Location`) %>% 
   gather(key = "month", value = "cpi", -Code, -Description) -> cpi2006
 ```
 
