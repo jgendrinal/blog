@@ -40,7 +40,7 @@ Somewhat normal. Good enough.
 
 ```{r}
 # show function/s with all their attributes
-df <- 
+df <- pnorm(c(-2.75, -1.25, 0, 1.25, 2.75))
 ```
 
 ## Output
