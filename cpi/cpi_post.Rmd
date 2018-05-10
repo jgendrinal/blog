@@ -1,0 +1,93 @@
+---
+title: "TRAIN, inflation, and the post hoc fallacy"
+author: 'Jose Francisco Endrinal'
+output: github_document
+---
+
+*DISCLAIMER: I am not a working data analyst, nor am I a data scientist. As such, the code, techniques, and methods used in this blog post do not qualify as industry-level code, techniques, and methods. This blog and its corresponding github repository are meant to document my progress as I come to learn the techniques and skills a data analyst or data scientist will be needing in their line of work. This style of learning is popularly called "Learning in Public"*
+
+## Setup
+
+```{r message=FALSE, warning=FALSE}
+# Load packages
+library(tidyverse)
+# Load dataset
+read_csv("data/CPI_2006=100_1994-2018_2.csv") %>% 
+  select(-`Geographic code`, 
+         -`Geographic code_1`, 
+         -`Geographic Location`) %>% 
+  gather(key = "month", value = "cpi", -Code, -Description) -> cpi2006
+```
+
+## First look at the dataset
+
+```{r}
+# View dataset
+```
+
+
+## Exploratory Data Analysis
+
+```{r}
+# Distribution of the class/target over the variable
+
+```
+
+
+## Feature Selection
+
+
+#### Test for Multicollinearity
+
+```{r}
+
+```
+
+#### Filter method
+```{r}
+
+```
+
+#### Wrapper method
+```{r}
+
+```
+
+
+## Training and Testing Splits
+
+```{r}
+
+```
+
+
+## Model building
+
+```{r}
+
+```
+
+
+## Model training
+
+```{r}
+
+```
+
+
+## Model testing
+
+```{r}
+
+```
+
+
+***
+More dataset information: [[Dataset description]](link to website)  
+
+If you liked this blog post, feel free to give me a clap! 
+
+If you'd like to give feedback, you can reach out to me at:  
+Email: francis.endrinal@gmail.com  
+FB Messenger: m.me/transparencyman  
+Twitter, Instagram: @jgendrinal
