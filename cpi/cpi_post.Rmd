@@ -18,6 +18,9 @@ read_csv("data/CPI_2006=100_1994-2018_2.csv") %>%
   filter(`Geographic Location` == "Philippines") %>% 
   select(-`Geographic Location`) %>% 
   gather(key = "month", value = "cpi", -Code, -Description) -> cpi2006
+
+# Temporary index
+index <- cpi2006 %>% select(Code, Description) %>% distinct()
 ```
 
 ## First look at the dataset
