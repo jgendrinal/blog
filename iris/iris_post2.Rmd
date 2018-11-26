@@ -14,7 +14,7 @@ Fortunately for us, there are conventions in coding that help us automatically t
 
 Testing your code has now become an important part of the data analysis process. For one, every step of processing data works under certain assumptions. It's not always the case that those assumptions are true. And when your assumptions are not in check, the steps in your analysis break down.  
 
-Another reason to test your code is that models also have the same assumption. In linear regression alone, there are five major assumptions that you have to keep in order to the results of linear regression to be unbiased. Testing your code ensures that the model fulfills all those assumptions.  
+Another reason to test your code is that models also have the same assumptions. In linear regression alone, there are five major assumptions that you have to keep in order that the results of linear regression to be unbiased. Testing your code ensures that the model fulfills all those assumptions.  
 
 There are two testing packages in R `assertthat` and `testthat`. `assertthat` gives modules to test particular functions. These tests help ensure that the code receives the right inputs for the function to work. `testthat` is a package for what are called unit tests, which tests the outputs of certain function for any condition you give it.  
 
@@ -26,7 +26,7 @@ We'll be trying to use `testthat` in this post to test whether our variables are
 
 We load our standard packages which include `tidyverse` and `testthat`. We read in our iris dataset and give it tidy names and recode any weird values.  
 
-```{r setup warning=FALSE, message=FALSE}
+```{r message=FALSE}
 # Load packages
 suppressPackageStartupMessages({
   library(tidyverse)
@@ -160,7 +160,7 @@ filter(iris.dt, class %in% c("versicolor")) %>%
   summary
 ```
 
-We have to smoothen this dataset so we can make a fair model out of it.  
+We have to smoothen this dataset so we can make a fair model out of it. But that can be a post for another time.   
 
 ***
 More dataset information: [[Dataset description]](link to website)  
