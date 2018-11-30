@@ -8,10 +8,19 @@ output: github_document
 
 ## Introduction
 
-*\#SundayStats is a weekly post on this blog about the default `stats` package in R. Each week, I will be working with one function/group of functions in this package and will talk about how to use it in a practical setting.*  
+*\#SundayStats is a weekly post on this blog about the default `stats` package in R. Each week (usually when I feel like it), I will be working with one function/group of functions in this package and will talk about how to use it in a practical setting.*  
 
-If you've taken a statistics class, you probably know about the normal distribution. Put simply, it's usually how frequent continuous (quantitative, measureable) data points would occur when the number of things you measure gets very large (massive oversimplifying here, trying to talk to a general audience).  
-On your x-axis, you have a the quantity you are trying to measure. On the y-axis, its how likely you are to find these data points.  
+If you've taken a statistics class, you probably know about some fancy concept called the normal distribution. If you're like most people and myself, you would have forgetten its importance the second you graduate from university. While most fields are doing statistical analysis as a way to test their claims about the world, the backbone of most of that analysis is often misunderstood or taken for granted. Yes, the normal distribution underpins most if not all scientific and social science quantitatively-backed study, including useful tools they use like linear regression, hypothesis testing, and the like. And yet most of us do statistical work blissfuly unaware of its properties and the role they play in our analysis.  
+
+This blog post will try to help in the reader's understanding of the normal distribution by demonstrating how it's used in the R `stats` package. I won't pretend this will be an exhaustive blog post, but it will broadly cover the concept enough to help the reader grasp its characteristics and understand its use in statistical analysis.  
+
+But first, if there is such a thing a normal distribution. What is a distribution in the first place?
+
+As a quick review, you know that when you want to understand how long, how short, how many or how few of a thing in the world is, you collect enough data and begin to realize that quantities/dimensions of things tend to not just be fixed at one value. What you'll find is that the measurements usually center around a number somewhere, and that generally, the measures/counts will spread a certain way.  
+
+A distribution is a model that describes how frequently countable increasing/decreasing numbers would occur given that your randomly sampled data gets very large (massive oversimplification here, trying to talk to a general audience). Put simply, it is a claim about whether the data is centered or spread and by how much.
+
+On your x-axis, you have a the quantity you are trying to measure. On the y-axis, its how likely you are to find these data points.
 
 ```{r}
 suppressPackageStartupMessages({
