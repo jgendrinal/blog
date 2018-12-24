@@ -14,17 +14,29 @@ If you've taken a statistics class, you probably know about some fancy concept c
 
 This blog post will try to help in the reader's understanding of the normal distribution by demonstrating how it's used in the R `stats` package. I won't pretend this will be an exhaustive blog post, but it will broadly cover the concept enough to help the reader grasp its characteristics and understand its use in statistical analysis.  
 
-But first, if there is such a thing a normal distribution. What is a distribution in the first place?
+But first, if there is such a thing a normal distribution. What is a distribution in the first place?  
 
 As a quick review, you know that when you want to understand how long, how short, how many or how few of a thing in the world is, you collect enough data and begin to realize that quantities/dimensions of things tend to not just be fixed at one value. What you'll find is that the measurements usually center around a number somewhere, and that generally, the measures/counts will spread a certain way.  
 
-A distribution is a model that describes how frequently countable increasing/decreasing numbers would occur given that your randomly sampled data gets very large (massive oversimplification here, trying to talk to a general audience). Put simply, it is a claim about whether the data is centered or spread and by how much.
+A distribution is a model that describes how frequently countable increasing/decreasing numbers would occur given that your randomly sampled data gets very large (massive oversimplification here, trying to talk to a general audience). Put simply, it is a claim about whether the data is centered or spread a certain way and and attempt to quantify how much.  
 
-On your x-axis, you have a the quantity you are trying to measure. On the y-axis, its how likely you are to find these data points.
+Now a normal distribution is a special distribution where most of the values are near a "center" and fewer of the values are farther away from the center. Now a lot of other types of distributions can have this characteristic, but most people would be happy with saying that something is normally distributed. You can argue about whether some other distribution better represents the data on hand. But because the normal distribution is more familiar to work with from a statistical standpoint, people tend to use it.   
+
+Let's take a deep dive. 
 
 ```{r}
 suppressPackageStartupMessages({
   library(tidyverse)})
+```
+
+## The function definition of the normal distribution
+
+Here is the formula for the normal distribution:
+
+```{r}
+norm_dist <- function(x, mu, sigma) {
+  e**-(x)
+}
 ```
 
 
