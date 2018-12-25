@@ -31,11 +31,11 @@ suppressPackageStartupMessages({
 
 ## The function definition of the normal distribution
 
-Here is the formula for the normal distribution:
+Here is the probability density function for the normal distribution:
 
 ```{r}
 norm_dist <- function(x, mu, sigma) {
-  e**-(x)
+  (1/(sigma*(2*pi)**(1/2)))*exp(-(((x - mu)**2)/(2*sigma**2)))
 }
 ```
 
