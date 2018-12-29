@@ -133,7 +133,10 @@ data_frame(x = df,
   geom_line(aes(y=y)) + 
   theme_bw()
 ```
- 
+
+Hopefully, I didn't do too bad a job of showing how the norm functions work in R! Let me know how I can improve in this post.
+
+Hope everyone enjoys the New Year!s
 
 ***
 More dataset information: [[Dataset description]](link to website)  
