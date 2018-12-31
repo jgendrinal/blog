@@ -1,7 +1,9 @@
 ---
 title: "#SundayStats: A deep dive into the stats package in R - The Normal Distribution"
 author: 'Jose Francisco Endrinal'
-output: github_document
+output: 
+  github_document: 
+    pandoc_args: --webtex
 ---
 
 *DISCLAIMER: I am not a working data analyst, nor am I a data scientist. As such, the code, techniques, and methods used in this blog post do not qualify as industry-level code, techniques, and methods. This blog and its corresponding github repository are meant to document my progress as I come to learn the techniques and skills a data analyst or data scientist will be needing in their line of work. This style of learning is popularly called "Learning in Public"*
@@ -32,6 +34,7 @@ suppressPackageStartupMessages({
 ## The function definition of the normal distribution
 
 Here is the probability density function for the normal distribution:
+
 
 $$y = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{{(x-\mu)}^2}{2\sigma^2}}$$
 
@@ -136,7 +139,7 @@ data_frame(x = df,
 
 Hopefully, I didn't do too bad a job of showing how the norm functions work in R! Let me know how I can improve in this post.
 
-Hope everyone enjoys the New Year!s
+Hope everyone enjoys the New Year!
 
 ***
 More dataset information: [[Dataset description]](link to website)  
