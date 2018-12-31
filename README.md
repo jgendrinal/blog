@@ -23,6 +23,9 @@ This project serves as a Github link to my [blog](https://medium.com/@jgendrinal
 -   *[Iris Part 2](iris/iris_post2.md)*
     Using `testthat` to test for data assumptions
 
+-   *[\#SundayStats - The Normal Distribution](sundaystats/ss_norm_post.md)*
+    Exploring the `rnorm()` and `dnorm()` functions from the R `{stats}` package
+
 ### Templates
 
 [Blog post template](blogfrancis/inst/rmarkdown/templates/blog_template/skeleton/skeleton.Rmd)
