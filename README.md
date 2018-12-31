@@ -20,6 +20,9 @@ This project serves as a Github link to my [blog](https://medium.com/@jgendrinal
 -   *[MRT dataset](mrt/mrt_post.md)*
     Hacking the MRT dataset and looking for clues before programming.
 
+-   *[Iris Part 2](iris/iris_post2.md)*
+    Using `testthat` to test for data assumptions
+
 ### Templates
 
 [Blog post template](blogfrancis/inst/rmarkdown/templates/blog_template/skeleton/skeleton.Rmd)

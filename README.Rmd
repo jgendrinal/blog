@@ -22,6 +22,9 @@ Why it's important to restart your R session and clear your console screen often
 - *[MRT dataset](mrt/mrt_post.md)*  
 Hacking the MRT dataset and looking for clues before programming.
 
+- *[Iris Part 2](iris/iris_post2.md)*  
+Using `testthat` to test for data assumptions
+
 ### Templates
 
 [Blog post template](blogfrancis/inst/rmarkdown/templates/blog_template/skeleton/skeleton.Rmd)
