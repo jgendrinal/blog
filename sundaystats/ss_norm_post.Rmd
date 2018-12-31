@@ -26,7 +26,7 @@ Now a normal distribution is a special distribution where most of the values are
 
 Let's take a deep dive. 
 
-```{r}
+```{r warning=FALSE}
 suppressPackageStartupMessages({
   library(tidyverse)})
 ```
@@ -142,11 +142,8 @@ Hopefully, I didn't do too bad a job of showing how the norm functions work in R
 Hope everyone enjoys the New Year!
 
 ***
-More dataset information: [[Dataset description]](link to website)  
-
 If you liked this blog post, feel free to give me a clap!  
 
 If you'd like to give feedback, you can reach out to me at:  
-Email: francis.endrinal@gmail.com  
-FB Messenger: m.me/transparencyman  
-Twitter, Instagram: @jgendrinal
+Email: livingwithdata@gmail.com  
+Twitter: @livingwithdata
