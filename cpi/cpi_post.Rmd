@@ -17,10 +17,20 @@ read_csv("data/CPI_2006=100_1994-2018_2.csv") %>%
          -`Geographic code_1`) %>% 
   filter(`Geographic Location` == "Philippines") %>% 
   select(-`Geographic Location`) %>% 
-  gather(key = "month", value = "cpi", -Code, -Description) -> cpi2006
+  gather(key = "month", value = "cpi", -Code, -Description) %>% 
+  mutate(Code = gsub('^\"(.+)\"$', 
+                     "\\1", Code, perl = TRUE)) %>% 
+  separate(Code, 
+           into = c("family", 
+                    "genus", 
+                    "species"), 
+           sep = "\\.", 
+           remove = TRUE, 
+           fill = "right") %>% 
+  filter (family != 0) %>% 
+  nest(-month) -> cpi2006
 
-# Temporary index
-index <- cpi2006 %>% select(Code, Description) %>% distinct()
+# Ask for weights for goods in CPI
 ```
 
 ## First look at the dataset
@@ -92,6 +102,5 @@ More dataset information: [[Dataset description]](link to website)
 If you liked this blog post, feel free to give me a clap! 
 
 If you'd like to give feedback, you can reach out to me at:  
-Email: francis.endrinal@gmail.com  
-FB Messenger: m.me/transparencyman  
-Twitter, Instagram: @jgendrinal
+Email: livingwithdata@gmail.com  
+Twitter: @livingwithdata
