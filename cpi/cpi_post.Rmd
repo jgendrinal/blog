@@ -1,0 +1,120 @@
+---
+title: "TRAIN, inflation, and why economists think everything causes everything"
+author: 'Jose Francisco Endrinal'
+output: github_document
+---
+
+*DISCLAIMER: I am not a working data analyst, nor am I a data scientist. As such, the code, techniques, and methods used in this blog post do not qualify as industry-level code, techniques, and methods. This blog and its corresponding github repository are meant to document my progress as I come to learn the techniques and skills a data analyst or data scientist will be needing in their line of work. This style of learning is popularly called "Learning in Public"*
+
+Most people view the unusually high recent rise in prices as primarily caused by the newly promulgated TRAIN Law. Specifically, fuel prices are seen as the major factor to blame for pushing inflation higher than it has been for the last decade. And the way taxes work, you know that TRAIN definitely has something to do with price rises. The price of goods and services will rise if government will tax more for every unit sold. This is basic economics plain and simple.  
+But economic theory does not tell us that *only taxes on goods and services* cause inflation. Quite the contrary. Economics tells us that price changes happen due to a whole host of factors, including changes in supply, changes in demand, changes in cost of raw materials, and the like. So what we know so far without doing further analysis is that *some* of the increase is due to TRAIN, because increasing taxes on fuel increase the price of fuel, and because most industries and people use fuel, the price increase changes everything we buy.  
+
+The question of whether increased fuel prices caused inflation is answered. Some of the inflation was caused because of TRAIN. To answer whether TRAIN was a major or primary cause, we have to ask the following question: *how much* of the inflation is caused by a rise in fuel prices? Because if many factors cause inflation, then those other factors have to be taken into account.  
+
+To answer this question, we have to do some empirical analysis. We have to look at changes in the price level and see if it can be explained by a rise in fuel prices. We can do this by running a linear regression, which is basically a statistical method that finds the closest possible linear relationship between one piece of data, and another. But we said that in economic theory there are many causes for price changes. This means we have to run a multiple linear regression, where we have one $y$ (price level) and multiples $x$s. This is usually expressed in the following formula:
+
+$$y = \beta_{0} + \beta_{1}x_{1} + \beta_{2}x_{2} + ... \beta_{n}x_{n} + \varepsilon$$
+where the $x$s represent the factors we are considering, the $\beta$s represent the overall effect of one increment of each $x$ on the $y$, and $\varepsilon$ captures any error in the equation.  
+
+This blog post cannot promise a thorough analysis, but hopefully this would be a good starting point for someone to better understand how many factors can affect prices.  
+
+Let's attempt the analysis by loading up the R code.  
+
+## Setup
+
+```{r warning=FALSE, message=FALSE}
+# Load packages
+library(tidyverse)
+# Load dataset
+read_csv("data/CPI_2006=100_1994-2018_2.csv") %>% 
+  select(-`Geographic code`, 
+         -`Geographic code_1`) %>% 
+  filter(`Geographic Location` == "Philippines") %>% 
+  select(-`Geographic Location`) %>% 
+  gather(key = "month", value = "cpi", -Code, -Description) %>% 
+  mutate(Code = gsub('^\"(.+)\"$', 
+                     "\\1", Code, perl = TRUE)) %>% 
+  separate(Code, 
+           into = c("family", 
+                    "genus", 
+                    "species"), 
+           sep = "\\.", 
+           remove = TRUE, 
+           fill = "right") %>% 
+  filter (family != 0) %>% 
+  nest(-month) -> cpi2006
+
+# Ask for weights for goods in CPI
+```
+
+## First look at the dataset
+
+```{r}
+# View dataset
+```
+
+
+## Exploratory Data Analysis
+
+```{r}
+# Distribution of the class/target over the variable
+
+```
+
+
+## Feature Selection
+
+
+#### Test for Multicollinearity
+
+```{r}
+
+```
+
+#### Filter method
+```{r}
+
+```
+
+#### Wrapper method
+```{r}
+
+```
+
+
+## Training and Testing Splits
+
+```{r}
+
+```
+
+
+## Model building
+
+```{r}
+
+```
+
+
+## Model training
+
+```{r}
+
+```
+
+
+## Model testing
+
+```{r}
+
+```
+
+
+***
+More dataset information: [[Dataset description]](link to website)  
+
+If you liked this blog post, feel free to give me a clap! 
+
+If you'd like to give feedback, you can reach out to me at:  
+Email: livingwithdata@gmail.com  
+Twitter: @livingwithdata
