@@ -22,9 +22,13 @@ Let's attempt the analysis by loading up the R code.
 
 ## Setup
 
+Let's load up our libraries and our dataset.
+
 ```{r warning=FALSE, message=FALSE}
 # Load packages
-library(tidyverse)
+library(readr)
+library(dplyr)
+library(tidyr)
 # Load dataset
 read_csv("data/CPI_2006=100_1994-2018_2.csv") %>% 
   select(-`Geographic code`, 
@@ -33,7 +37,7 @@ read_csv("data/CPI_2006=100_1994-2018_2.csv") %>%
   select(-`Geographic Location`) %>% 
   gather(key = "month", value = "cpi", -Code, -Description) %>% 
   mutate(Code = gsub('^\"(.+)\"$', 
-                     "\\1", Code, perl = TRUE)) %>% 
+                     "\\1", Code)) %>% 
   separate(Code, 
            into = c("family", 
                     "genus", 
@@ -42,8 +46,9 @@ read_csv("data/CPI_2006=100_1994-2018_2.csv") %>%
            remove = TRUE, 
            fill = "right") %>% 
   filter (family != 0) %>% 
-  nest(-month) -> cpi2006
-
+  nest(-month) -> cpi_2006
+# Define weights
+#
 # Ask for weights for goods in CPI
 ```
 
@@ -51,6 +56,7 @@ read_csv("data/CPI_2006=100_1994-2018_2.csv") %>%
 
 ```{r}
 # View dataset
+cpi_2006 
 ```
 
 
