@@ -29,11 +29,9 @@ output: github_document
 ```
 
 ***
-More dataset information: [[Dataset description]](link to website)  
 
 If you liked this blog post, feel free to give me a clap!  
 
 If you'd like to give feedback, you can reach out to me at:  
-Email: francis.endrinal@gmail.com  
-FB Messenger: m.me/transparencyman  
-Twitter, Instagram: @jgendrinal
+Email: livingwithdata@gmail.com  
+Twitter, Instagram: @livingwithdata
