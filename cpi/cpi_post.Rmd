@@ -47,6 +47,13 @@ read_csv("data/CPI_2006=100_1994-2018_2.csv") %>%
            remove = TRUE, 
            fill = "right") %>% 
   filter (family != 0) %>% 
+  separate(species, 
+           into = c("species", 
+                    "subspecies"), 
+           sep = 1, 
+           convert = TRUE) %>% 
+  filter(Description != "Bread And Cereals") %>% 
+  filter(!is.na(species) | !is.na(species))
   nest(-month) -> cpi_2006
 ```
 
@@ -61,25 +68,32 @@ read_excel("data/Weights by Commodity Group for CPI_2012 and 2006 based, Philipp
          w_2012 = `20012-based`, 
          w_2006 = `2006-based`) %>% 
   filter(item != "ALL ITEMS") %>% 
+  # Extract genus from "I.  XXX" format
   mutate(genus = if_else(grepl("^.*\\. .*$", item), item, NA_character_)) %>% 
   fill(genus) %>% 
+  # Extract family from "* XXX" format
   mutate(n = 1:n(), 
          family = if_else(grepl("^\\* .*", item), item, NA_character_)) %>% 
   fill(family) %>% 
   mutate(family = if_else(n < 16, family, NA_character_)) %>% 
+  # Extract species
   mutate(species = if_else(!grepl("(^\\* .*)|(^.*\\. .*$)", 
                                  item), 
                            item, NA_character_)) %>% 
   filter(n != 19) %>% 
-  # select(-n, -item) %>% 
+  # pass family to species
   mutate(species = if_else(family == "* Non-alcoholic Beverages" & !is.na(family), 
                            "* Non-alcoholic Beverages", 
                            species), 
          family = if_else(is.na(family) & !is.na(species), species, family)) %>% 
   filter(!is.na(species)) %>% 
   select(-item, -n) %>% 
-  select(genus, family, species, w_2006, w_2012) -> weights
-# Add one more category for Bread and cereals
+  select(genus, family, species, w_2006, w_2012) %>% 
+  # Include subspecies for bread and cereals
+  mutate(n = 1:n(), 
+           subspecies = if_else(n %in% c(2, 3, 4), species, NA_character_), 
+           species = if_else(n %in% c(2, 3, 4), "Bread and Cereals", species)) ->
+  weights
 ```
 
 ## First look at the dataset
