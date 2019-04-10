@@ -30,6 +30,7 @@ library(readr)
 library(readxl)
 library(dplyr)
 library(tidyr)
+library(stringr)
 # Load dataset
 read_csv("data/CPI_2006=100_1994-2018_2.csv") %>% 
   select(-`Geographic code`, 
@@ -53,7 +54,7 @@ read_csv("data/CPI_2006=100_1994-2018_2.csv") %>%
            sep = 1, 
            convert = TRUE) %>% 
   filter(Description != "Bread And Cereals") %>% 
-  filter(!is.na(species) | !is.na(species))
+  filter(!is.na(species) | !is.na(species)) %>% 
   nest(-month) -> cpi_2006
 ```
 
@@ -67,15 +68,16 @@ read_excel("data/Weights by Commodity Group for CPI_2012 and 2006 based, Philipp
   rename(item = `COMMODITY  GROUP`, 
          w_2012 = `20012-based`, 
          w_2006 = `2006-based`) %>% 
-  filter(item != "ALL ITEMS") %>% 
-  # Extract genus from "I.  XXX" format
-  mutate(genus = if_else(grepl("^.*\\. .*$", item), item, NA_character_)) %>% 
-  fill(genus) %>% 
+  filter(item != "ALL ITEMS", 
+         item != "NON-FOOD") %>% 
+  # Extract family from "I.  XXX" format
+  mutate(family = if_else(grepl("^.*\\. .*$", item), item, NA_character_)) %>% 
+  fill(family) %>% 
   # Extract family from "* XXX" format
   mutate(n = 1:n(), 
-         family = if_else(grepl("^\\* .*", item), item, NA_character_)) %>% 
-  fill(family) %>% 
-  mutate(family = if_else(n < 16, family, NA_character_)) %>% 
+         genus = if_else(grepl("^\\* .*", item), item, NA_character_)) %>% 
+  fill(genus) %>% 
+  mutate(genus = if_else(n < 16, genus, NA_character_)) %>% 
   # Extract species
   mutate(species = if_else(!grepl("(^\\* .*)|(^.*\\. .*$)", 
                                  item), 
@@ -88,12 +90,28 @@ read_excel("data/Weights by Commodity Group for CPI_2012 and 2006 based, Philipp
          family = if_else(is.na(family) & !is.na(species), species, family)) %>% 
   filter(!is.na(species)) %>% 
   select(-item, -n) %>% 
-  select(genus, family, species, w_2006, w_2012) %>% 
+  select(family, genus, species, w_2006, w_2012) %>% 
   # Include subspecies for bread and cereals
-  mutate(n = 1:n(), 
-           subspecies = if_else(n %in% c(2, 3, 4), species, NA_character_), 
-           species = if_else(n %in% c(2, 3, 4), "Bread and Cereals", species)) ->
-  weights
+  mutate(
+    n = 1:n(), 
+    subspecies = if_else(n %in% c(2, 3, 4), species, NA_character_), 
+    species = if_else(n %in% c(2, 3, 4), "Bread and Cereals",  species)
+    ) %>% 
+  # Mass recode of weight descriptions
+  mutate(
+    family = recode(family, 
+                    "I. FOOD AND NON-ALCHOLIC BEVERAGES" = "01", 
+                    "II. ALCOHOLIC BEVERAGES AND TOBACCO" = "02", 
+                    "III. CLOTHING AND FOOTWEAR" = "03", 
+                    "IV. HOUSING, WATER, ELECTRICITY, GAS AND OTHER FUELS" = "04", 
+                    "V. FURNISHINGS, HOUSEHOLD EQUIPMENT AND ROUTINE MAINTENANCE OF THE  HOUSE" = "05", 
+                    "VI. HEALTH" = "06", 
+                    "VII. TRANSPORT" = "07", 
+                    "VIII. COMMUNICATION" = "08", 
+                    "IX. RECREATION AND CULTURE" = "09", 
+                    "X. EDUCATION" = "10", 
+                    "XI. RESTAURANT AND MISCELLANEOUS GOODS AND SERVICES" = "11")
+  ) -> weights
 ```
 
 ## First look at the dataset
