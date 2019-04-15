@@ -1,0 +1,222 @@
+---
+title: "Wasted on data: Exploring the wine dataset"
+output: html_document
+date: "2019-02-19"
+---
+
+
+
+<p>Whether you’re a drinker or not, chances are that alcohol has played some part in the culture of where you live. It would be awesome to take measurements on any wine and be able to determine what kind of wine it was. In this dataset, we’re sticking with three unidentified types of wine.</p>
+<p>The wine dataset is a series of measurements of different samples of three types of wine. In this dataset, there are thirteen characteristics that were measured: 1. Alcohol 2. Malic acid 3. Ash 4. Alcalinity of ash<br />
+5. Magnesium 6. Total phenols 7. Flavanoids 8. Nonflavanoid phenols 9. Proanthocyanins 10. Color intensity 11. Hue 12. OD280/OD315 of diluted wines 13. Proline</p>
+<p>Unfortunately, we do not have the units of these measurements and simply have to rely on their relative values.</p>
+<pre class="r"><code># Loading package
+suppressPackageStartupMessages({
+  library(nnet)
+  library(tidyverse)
+  library(modelr)})
+#Loading dataset
+read_csv(&quot;data/wine.csv&quot;) %&gt;% 
+  rename(class = X1, 
+         alcohol = X2, 
+         mall.Ac = X3, 
+         ash = X4, 
+         alk.Ash = X5, 
+         magnes = X6, 
+         tot.Phen = X7, 
+         flavan = X8, 
+         nonFl.ph = X9, 
+         proanth = X10, 
+         col.Int = X11, 
+         hue = X12, 
+         dil = X13, 
+         proline = X14) -&gt; wine</code></pre>
+<pre><code>## # A tibble: 178 x 14
+##    class alcohol mall.Ac   ash alk.Ash magnes tot.Phen flavan nonFl.ph
+##    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
+##  1     1    14.2    1.71  2.43    15.6    127     2.8    3.06    0.28 
+##  2     1    13.2    1.78  2.14    11.2    100     2.65   2.76    0.26 
+##  3     1    13.2    2.36  2.67    18.6    101     2.8    3.24    0.3  
+##  4     1    14.4    1.95  2.5     16.8    113     3.85   3.49    0.24 
+##  5     1    13.2    2.59  2.87    21      118     2.8    2.69    0.39 
+##  6     1    14.2    1.76  2.45    15.2    112     3.27   3.39    0.34 
+##  7     1    14.4    1.87  2.45    14.6     96     2.5    2.52    0.3  
+##  8     1    14.1    2.15  2.61    17.6    121     2.6    2.51    0.31 
+##  9     1    14.8    1.64  2.17    14       97     2.8    2.98    0.290
+## 10     1    13.9    1.35  2.27    16       98     2.98   3.15    0.22 
+## # ... with 168 more rows, and 5 more variables: proanth &lt;dbl&gt;,
+## #   col.Int &lt;dbl&gt;, hue &lt;dbl&gt;, dil &lt;dbl&gt;, proline &lt;dbl&gt;</code></pre>
+<p>Looking at the dataset alone, we can see that most of these variables are continuous. But we have too many characteristics to work with, hurting the insight we could gain. Let’s try to do what we did last time with our <a href="">breast cancer dataset</a>. We need to see if there may be an apparent way to separate the classes and the characteristics based on visualization alone.</p>
+<div id="exploratory-data-analysis" class="section level3">
+<h3>Exploratory data analysis</h3>
+<p>Let’s see which variables we can use to divide the data classes. Unlike our previous post on the breast cancer dataset, this data is continuous data. Which means that we need to look at the smoothened distribution rather than the discrete occurences.</p>
+<p>Our visualization looks like the following:</p>
+<pre class="r"><code>mutate(wine, class = as.character(class)) %&gt;% 
+  mutate_if(is.numeric, scale) %&gt;% # change to z-scores
+  gather(key, value, -class) %&gt;% 
+  ggplot(aes(x = value)) + 
+  geom_density(aes(fill = class), position = &quot;stack&quot;) + 
+  facet_wrap(~ key, ncol = 4)</code></pre>
+<p><img src="/post/wine_post_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>dil, hue and tot.Phen here look like they can divide the red and blue class well. col.Int has the green and blue class on either side. proline differentiates the red and green class well. I’ll try and think of a deliberate way to pick variables in a future post, by this is the best I have so far. In the future, I’ll be using feature selection methods that don’t require expert judgement (filter, wrapper methods, etc.) and instead rely on statistical methods to weed out variables.</p>
+<p>Using these variables, we’d like to know if a multinomial logistic regression model would work in separating these three classes well and how well we can improve it.</p>
+</div>
+<div id="training-and-testing-sets" class="section level2">
+<h2>Training and Testing Sets</h2>
+<p>Like in our previous post, let us make 100 training and testing sets for our dataset.</p>
+<pre class="r"><code>set.seed(2387)
+tt.sets &lt;- select(wine, 
+                  class, 
+                  dil, 
+                  hue, 
+                  tot.Phen, 
+                  col.Int, 
+                  proline) %&gt;% 
+  mutate(class = as.character(class) %&gt;% as_factor) %&gt;% 
+  crossv_mc(n = 100, test = 0.3) %&gt;% 
+  mutate(ind.tr = map(train, as.integer), 
+         ind.te = map(test, as.integer), 
+         train.s = map(train, as_data_frame), 
+         test.s = map(test, as_data_frame))</code></pre>
+<pre class="r"><code>tt.sets</code></pre>
+<pre><code>## # A tibble: 100 x 7
+##    train      test       .id   ind.tr    ind.te    train.s      test.s     
+##    &lt;list&gt;     &lt;list&gt;     &lt;chr&gt; &lt;list&gt;    &lt;list&gt;    &lt;list&gt;       &lt;list&gt;     
+##  1 &lt;S3: resa~ &lt;S3: resa~ 001   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+##  2 &lt;S3: resa~ &lt;S3: resa~ 002   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+##  3 &lt;S3: resa~ &lt;S3: resa~ 003   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+##  4 &lt;S3: resa~ &lt;S3: resa~ 004   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+##  5 &lt;S3: resa~ &lt;S3: resa~ 005   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+##  6 &lt;S3: resa~ &lt;S3: resa~ 006   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+##  7 &lt;S3: resa~ &lt;S3: resa~ 007   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+##  8 &lt;S3: resa~ &lt;S3: resa~ 008   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+##  9 &lt;S3: resa~ &lt;S3: resa~ 009   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+## 10 &lt;S3: resa~ &lt;S3: resa~ 010   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
+## # ... with 90 more rows</code></pre>
+<p>Now that we have the train and test sets, we can build our multinomial logistic regression model using the <code>nnet</code> package.</p>
+</div>
+<div id="building-the-multinomial-regression-model" class="section level2">
+<h2>Building the multinomial regression model</h2>
+<p>We will structure the function we will use to map the training sets so that the output of this function is a model. What makes this model different from the normal logistic regression model is that this model is for a class where the values are not 1 or 0. In this case, the values can be 1, 2, or 3.</p>
+<pre class="r"><code>mnom &lt;- function(df){
+  multinom(class ~ 
+             dil + 
+             hue + 
+             tot.Phen + 
+             col.Int + 
+             proline, 
+           data = df, 
+           trace = FALSE)}</code></pre>
+<p>We have enabled <code>trace</code> to be <code>FALSE</code> so that no messages will display.</p>
+<p>Now for the predicting and response functions:</p>
+<pre class="r"><code>mnom_predict &lt;- function(model, df){
+  preds &lt;- predict(model, newdata = select(df, -class), type = &quot;class&quot;)}
+mnom_response &lt;- function(df){
+  df[[&quot;class&quot;]]}</code></pre>
+</div>
+<div id="training-and-testing-the-model" class="section level2">
+<h2>Training and testing the model</h2>
+<p>As in the same way we did it in my previous post, our recipe for training and testing our model will be done in the following way.</p>
+<pre class="r"><code># average score
+mnom_mscore &lt;- function(pred, resp){
+  df &lt;- pred == resp
+  mean(df)}
+# create new variables
+tt.sets &lt;- tt.sets %&gt;% 
+  mutate(model = map(train.s, mnom), 
+         pred = map2(model, test.s, mnom_predict), 
+         resp = map(test.s, mnom_response), 
+         hit = map2_dbl(pred, resp, mnom_mscore))
+score &lt;- summarise(tt.sets, score = mean(hit))
+score[[1]]</code></pre>
+<pre><code>## [1] 0.9275926</code></pre>
+<p>With an accuraccy of about ~93 percent, this model can still do better, but this is a great starting point for it.</p>
+</div>
+<div id="distribution-of-scores" class="section level2">
+<h2>Distribution of scores</h2>
+<p>Let’s see how densely the scores are together so that we can see how likely it is to have another score other than our ~93 percent average.</p>
+<pre class="r"><code>select(tt.sets, hit) %&gt;% 
+  ggplot(aes(x = hit)) + 
+  geom_density(fill = &quot;#87CEFA&quot;)</code></pre>
+<p><img src="/post/wine_post_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>The distribution is not gaussian, but more scores ten toward a ~95 percent accuracy on the part of this model.</p>
+</div>
+<div id="visualizing-the-effect-of-a-multinomial-regression" class="section level2">
+<h2>Visualizing the effect of a multinomial regression</h2>
+<p>We visualize the effect of two variables on the regression and see if a clear joint relationship can be seen with regard to separation.</p>
+<pre class="r"><code># Generate variable pair combinations of 2
+select(wine, 
+       dil, 
+       hue, 
+       tot.Phen, 
+       col.Int, 
+       proline) %&gt;% 
+  tbl_vars %&gt;% 
+  combn(2) %&gt;% 
+  as_tibble %&gt;% 
+  gather %&gt;% 
+  rename(pair = key) %&gt;% 
+  mutate(elem = rep(c(&quot;X1&quot;, &quot;X2&quot;), 10)) %&gt;% 
+  spread(key = elem, value = value) %&gt;% 
+  select(-pair) -&gt; value.prs</code></pre>
+<pre><code>## Warning: `as_tibble.matrix()` requires a matrix with column names or a `.name_repair` argument. Using compatibility `.name_repair`.
+## This warning is displayed once per session.</code></pre>
+<pre class="r"><code># Function to extract value from wine dataset
+subset_frm_wine &lt;- function(id, var) {
+  rescol &lt;- wine[, var] %&gt;% scale
+  res &lt;- rescol[id]
+  as.numeric(unlist(res))}
+# Gather and spread to two 
+select(wine, 
+       class) %&gt;% 
+  mutate(
+    class = as.character(class), 
+    id = 1:n()) %&gt;% 
+  mutate(pairs = list(value.prs)) %&gt;% 
+  unnest() %&gt;% 
+  mutate(Y1 = map2_dbl(id, X1, subset_frm_wine), 
+         Y2 = map2_dbl(id, X2, subset_frm_wine)) %&gt;% 
+  ggplot(aes(x = Y1, y = Y2)) + 
+  geom_point(aes(color = class)) + 
+  facet_grid(X1 ~ X2)</code></pre>
+<p><img src="/post/wine_post_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Whenever <code>proline</code> is used with variables like <code>col.Int</code>, <code>dil</code>, <code>hue</code>, and <code>tot.Phen</code>, the classes (the dots) seem to separate nicely. I’m considering having interaction models for these variables in a future post, but now we know that these variables work really well to separate the classes, at least in the way we visualized them in 2D space.</p>
+<p>Let’s try doing that same visualization, but this time, we try to show where the points were classified correctly and incorrectly in this dataset.</p>
+<pre class="r"><code># Simulated trained model for all data
+select(wine, 
+       dil, 
+       hue, 
+       tot.Phen, 
+       col.Int, 
+       proline, 
+       class) %&gt;% 
+  multinom(class ~ 
+             dil + 
+             hue + 
+             tot.Phen + 
+             col.Int + 
+             proline, 
+           data = ., 
+           trace = FALSE) -&gt; mnom_trained
+# Seeing how the model sees predicts the same data
+select(wine, 
+       dil, 
+       hue, 
+       tot.Phen, 
+       col.Int, 
+       proline, 
+       class) %&gt;% 
+  mutate(id = 1:n(), 
+         pred = mnom_predict(mnom_trained, .), 
+         hit = pred == class) %&gt;% 
+  mutate(pairs = list(value.prs)) %&gt;% 
+  unnest() %&gt;% 
+  mutate(Y1 = map2_dbl(id, X1, subset_frm_wine), 
+         Y2 = map2_dbl(id, X2, subset_frm_wine)) %&gt;% 
+  arrange(desc(hit)) %&gt;% 
+  ggplot(aes(x = Y1, y = Y2)) + 
+  geom_point(aes(color = hit)) + 
+  facet_grid(X1 ~ X2)</code></pre>
+<p><img src="/post/wine_post_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>We see that where the errors are are where the classes often mix. As is the usual case with these models.</p>
+</div>

@@ -1,0 +1,40 @@
+baseurl = "/"
+title = "The data salaryman"
+theme = "hugo-theme-basic"
+languageCode = "en-us"
+enableEmoji = true 
+copyright = "© 2019 Jose Francisco G. Endrinal"
+description = "Basic personal site theme styled with minimal tachyons, syntax highlighting, and blog series configuration."
+ignoreFiles = ["\\.Rmd$", "\\.Rmarkdown$", "_cache$", "^README\\.md$"]
+publishDir = "../jgendrinal.github.io"
+
+[taxonomies]
+  category = "categories"
+  series = "series"
+  tag = "tags"
+
+[params]
+  titleEmoji = ":briefcase:"
+  # change this!
+  twitter = "livingwithdata"
+
+[Permalinks]
+  post = "post/:slug/"
+
+[[params.menu]]
+  name = "about this site"
+  url = "about/"
+
+[[params.menu]]
+  name = "blog"
+  url = "post/"
+
+[privacy]
+  [privacy.googleAnalytics]
+    anonymizeIP = true
+    respectDoNotTrack = true
+    useSessionStorage = true
+  [privacy.twitter]
+    enableDNT = true
+  [privacy.youtube]
+    privacyEnhanced = true

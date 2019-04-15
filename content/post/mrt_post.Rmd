@@ -1,0 +1,170 @@
+---
+title: "The MRT dataset: A Case in Exploratory Data Analysis"
+output: html_document
+date: "2018-05-09"
+---
+
+The Metro Rail Transit (MRT) is a light rail transit system in Metro Manila, Philippines that runs along Epifanio delos Santos Avenue (EDSA) from Taft Avenue Station in Manila, to North Avenue Station in Quezon City. This dataset is the hourly traffic of passengers going in and out of turnstiles at the different train stations covering the years 2012 to 2014.  
+
+I cleaned up this dataset before I put it here so that we can do exploratory data analysis (EDA) straightaway. For the source code on how this was cleaned up, you can check out the link [here](R/wrang.R).  
+
+I'm not going to draw any insights from this dataset. I am simply going to decompose this dataset so I can figure out what to do with it later.  
+
+Let's get started!  
+
+## Setup
+
+```{r message=FALSE, warning=FALSE}
+# Load packages
+suppressPackageStartupMessages({
+  library(tidyverse)
+  library(lubridate)})
+# Load dataset
+read_csv("data/clean/mrttraff.csv") %>% 
+  mutate(
+    station = parse_factor(station, 
+               c("taft", 
+                 "magallanes", 
+                 "ayala", 
+                 "buendia", 
+                 "guadalupe", 
+                 "boni", 
+                 "shaw", 
+                 "ortigas", 
+                 "santolan", 
+                 "cubao", 
+                 "gma", 
+                 "quezon", 
+                 "north"), 
+               ordered = TRUE)) -> mrt.dt
+```
+
+## First look at the dataset
+
+```{r}
+# View dataset
+mrt.dt
+```
+
+This dataset shows the `year`, `month`, `day`, `station`, `hour`, as well as the number of people who have entered the station (`enter`) and who have exited (`exit`) as well the `net` entry/exit (+/-).  
+
+This dataset features all the stations of the MRT covering 24 hours.  
+
+```{r}
+unique(mrt.dt$station)
+```
+
+```{r}
+unique(mrt.dt$hour)
+```
+
+Looking at the averages for traffic `entry`, `exit`, and `net` overall, we have the following:
+
+```{r}
+summary(select(mrt.dt, entry, exit, net))
+```
+
+Our five number summaries give us the above.  
+
+## Exploratory Data Analysis
+
+```{r}
+# Distribution of the class/target over the variable
+select(mrt.dt, month, hour, station, entry, exit) %>% 
+  gather(key = "mode", value = "traff", entry, exit) %>% 
+  group_by(station, month, hour, mode) %>% 
+  summarise(traff = mean(traff)) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = hour, y = traff)) + 
+    geom_bar(aes(fill = mode), 
+             stat = "identity", 
+             position = "stack") + 
+    facet_wrap(~ station)
+```
+
+```{r}
+select(mrt.dt, month, hour, station, net) %>% 
+  group_by(station, month, hour) %>% 
+  summarise(net = mean(net)) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = hour, y = net)) + 
+  geom_bar(stat = "identity", 
+           fill = "skyblue") + 
+  ylim(-75000, 75000) + 
+  facet_wrap(~ station)
+```
+
+```{r}
+select(mrt.dt, month, hour, station, entry, exit) %>% 
+  mutate(avg = (entry + exit)/2) %>% 
+  select (-entry, -exit) %>% 
+  group_by(station, month, hour) %>% 
+  summarise(avg = mean(avg)) %>% 
+  ungroup() %>% 
+  ggplot(aes(x = hour, y = avg)) + 
+  geom_bar(stat = "identity", 
+           position = "stack", 
+           fill = "tan") + 
+  ylim(0, 150000) + 
+  facet_wrap(~ station)
+```
+
+Let's try and see the trends for entry and exit per station. Let's try 2012 first
+
+```{r}
+# Function to take the year and plot the station trends for that year
+take_year <- function(year_){
+  select(mrt.dt, -net) %>% 
+  filter(year == year_ & hour > 5 & hour < 22) %>% 
+  mutate(month = if_else(month < 10, str_c("0", month), as.character(month)), 
+         day = if_else(day < 10, str_c("0", day), as.character(day)), 
+         hour = if_else(hour < 10, str_c("0", hour), as.character(hour)), 
+         time = str_c(as.character(year), month, day, hour) %>% ymd_h) %>% 
+  select(-year, -month, -day, -hour) %>% 
+  gather(key = "mode", value = "traff", entry, exit) %>% 
+  ggplot(aes(time)) + 
+  geom_line(aes(y = traff, color = mode)) + 
+  facet_wrap(~station)
+}
+```
+
+
+```{r}
+take_year(2012)
+```
+
+Mostly even. 
+
+```{r warning=FALSE}
+take_year(2013)
+```
+
+```{r}
+take_year(2014)
+```
+
+Notice that we have missing data for some periods. Will investigate at another time why this is the case. 
+
+```{r}
+select(mrt.dt, year, station, hour, entry, exit) %>% 
+  gather(key = "mode", value = "traff", entry, exit) %>% 
+  filter(mode == "entry") %>% 
+  filter(year == 2012) %>% 
+  filter(hour > 4 & hour < 24) %>% 
+  ggplot(aes(hour, traff)) + 
+  geom_point(color = "#8A45B3", alpha = 0.25) + 
+  facet_wrap(~station)
+```
+
+```{r}
+select(mrt.dt, year, station, hour, entry, exit) %>% 
+  gather(key = "mode", value = "traff", entry, exit) %>% 
+  filter(mode == "exit") %>% 
+  filter(year == 2012) %>% 
+  filter(hour > 4 & hour < 24) %>% 
+  ggplot(aes(hour, traff)) + 
+  geom_point(color = "#76BA4C", alpha = 0.25) + 
+  facet_wrap(~station)
+```
+
+Would be interesting to check the distribution of traffic per hour per station.  

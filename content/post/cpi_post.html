@@ -1,0 +1,151 @@
+---
+title: "TRAIN, inflation, and why economists think everything causes everything"
+author: 'Jose Francisco Endrinal'
+output: html_document
+date: "2019-04-14"
+---
+
+
+
+<p><em>DISCLAIMER: I am not a working data analyst, nor am I a data scientist. As such, the code, techniques, and methods used in this blog post do not qualify as industry-level code, techniques, and methods. This blog and its corresponding github repository are meant to document my progress as I come to learn the techniques and skills a data analyst or data scientist will be needing in their line of work. This style of learning is popularly called “Learning in Public”</em></p>
+<p>Most people view the unusually high recent rise in prices as primarily caused by the newly promulgated TRAIN Law. Specifically, fuel prices are seen as the major factor to blame for pushing inflation higher than it has been for the last decade. And the way taxes work, you know that TRAIN definitely has something to do with price rises. The price of goods and services will rise if government will tax more for every unit sold. This is basic economics plain and simple.<br />
+But economic theory does not tell us that <em>only taxes on goods and services</em> cause inflation. Quite the contrary. Economics tells us that price changes happen due to a whole host of factors, including changes in supply, changes in demand, changes in cost of raw materials, and the like. So what we know so far without doing further analysis is that <em>some</em> of the increase is due to TRAIN, because increasing taxes on fuel increase the price of fuel, and because most industries and people use fuel, the price increase changes everything we buy.</p>
+<p>The question of whether increased fuel prices caused inflation is answered. Some of the inflation was caused because of TRAIN. To answer whether TRAIN was a major or primary cause, we have to ask the following question: <em>how much</em> of the inflation is caused by a rise in fuel prices? Because if many factors cause inflation, then those other factors have to be taken into account.</p>
+<p>To answer this question, we have to do some empirical analysis. We have to look at changes in the price level and see if it can be explained by a rise in fuel prices. We can do this by running a linear regression, which is basically a statistical method that finds the closest possible linear relationship between one piece of data, and another. But we said that in economic theory there are many causes for price changes. This means we have to run a multiple linear regression, where we have one <span class="math inline">\(y\)</span> (price level) and multiples <span class="math inline">\(x\)</span>s. This is usually expressed in the following formula:</p>
+<p><span class="math display">\[y = \beta_{0} + \beta_{1}x_{1} + \beta_{2}x_{2} + ... \beta_{n}x_{n} + \varepsilon\]</span> where the <span class="math inline">\(x\)</span>s represent the factors we are considering, the <span class="math inline">\(\beta\)</span>s represent the overall effect of one increment of each <span class="math inline">\(x\)</span> on the <span class="math inline">\(y\)</span>, and <span class="math inline">\(\varepsilon\)</span> captures any error in the equation.</p>
+<p>This blog post cannot promise a thorough analysis, but hopefully this would be a good starting point for someone to better understand how many factors can affect the overall price level.</p>
+<p>Let’s attempt the analysis by loading up the R code.</p>
+<div id="setup" class="section level2">
+<h2>Setup</h2>
+<p>Let’s load up our libraries and our dataset.</p>
+<pre class="r"><code># Load packages
+library(readr)
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(stringr)
+# Load dataset
+read_csv(&quot;data/CPI_2006=100_1994-2018_2.csv&quot;) %&gt;% 
+  select(-`Geographic code`, 
+         -`Geographic code_1`) %&gt;% 
+  filter(`Geographic Location` == &quot;Philippines&quot;) %&gt;% 
+  select(-`Geographic Location`) %&gt;% 
+  gather(key = &quot;month&quot;, value = &quot;cpi&quot;, -Code, -Description) %&gt;% 
+  mutate(Code = gsub(&#39;^\&quot;(.+)\&quot;$&#39;, 
+                     &quot;\\1&quot;, Code)) %&gt;% 
+  separate(Code, 
+           into = c(&quot;family&quot;, 
+                    &quot;genus&quot;, 
+                    &quot;species&quot;), 
+           sep = &quot;\\.&quot;, 
+           remove = TRUE, 
+           fill = &quot;right&quot;) %&gt;% 
+  filter (family != 0) %&gt;% 
+  separate(species, 
+           into = c(&quot;species&quot;, 
+                    &quot;subspecies&quot;), 
+           sep = 1, 
+           convert = TRUE) %&gt;% 
+  filter(Description != &quot;Bread And Cereals&quot;) %&gt;% 
+  filter(!is.na(species) | !is.na(species)) %&gt;% 
+  nest(-month) -&gt; cpi_2006</code></pre>
+<p>We include the weights of the CPI to be able to map actual goods to the price level.</p>
+<pre class="r"><code># Define weights
+read_excel(&quot;data/Weights by Commodity Group for CPI_2012 and 2006 based, Philippines, NCR, and AONCR_2.xlsx&quot;, 
+           skip = 6) %&gt;% 
+  filter_all(all_vars(!is.na(.))) %&gt;% 
+  rename(item = `COMMODITY  GROUP`, 
+         w_2012 = `20012-based`, 
+         w_2006 = `2006-based`) %&gt;% 
+  filter(item != &quot;ALL ITEMS&quot;, 
+         item != &quot;NON-FOOD&quot;) %&gt;% 
+  # Extract family from &quot;I.  XXX&quot; format
+  mutate(family = if_else(grepl(&quot;^.*\\. .*$&quot;, item), item, NA_character_)) %&gt;% 
+  fill(family) %&gt;% 
+  # Extract family from &quot;* XXX&quot; format
+  mutate(n = 1:n(), 
+         genus = if_else(grepl(&quot;^\\* .*&quot;, item), item, NA_character_)) %&gt;% 
+  fill(genus) %&gt;% 
+  mutate(genus = if_else(n &lt; 16, genus, NA_character_)) %&gt;% 
+  # Extract species
+  mutate(species = if_else(!grepl(&quot;(^\\* .*)|(^.*\\. .*$)&quot;, 
+                                 item), 
+                           item, NA_character_)) %&gt;% 
+  filter(n != 19) %&gt;% 
+  # pass family to species
+  mutate(species = if_else(family == &quot;* Non-alcoholic Beverages&quot; &amp; !is.na(family), 
+                           &quot;* Non-alcoholic Beverages&quot;, 
+                           species), 
+         family = if_else(is.na(family) &amp; !is.na(species), species, family)) %&gt;% 
+  filter(!is.na(species)) %&gt;% 
+  select(-item, -n) %&gt;% 
+  select(family, genus, species, w_2006, w_2012) %&gt;% 
+  # Include subspecies for bread and cereals
+  mutate(
+    n = 1:n(), 
+    subspecies = if_else(n %in% c(2, 3, 4), species, NA_character_), 
+    species = if_else(n %in% c(2, 3, 4), &quot;Bread and Cereals&quot;,  species)
+    ) %&gt;% 
+  # Mass recode of weight descriptions
+  mutate(
+    family = recode(family, 
+                    &quot;I. FOOD AND NON-ALCHOLIC BEVERAGES&quot; = &quot;01&quot;, 
+                    &quot;II. ALCOHOLIC BEVERAGES AND TOBACCO&quot; = &quot;02&quot;, 
+                    &quot;III. CLOTHING AND FOOTWEAR&quot; = &quot;03&quot;, 
+                    &quot;IV. HOUSING, WATER, ELECTRICITY, GAS AND OTHER FUELS&quot; = &quot;04&quot;, 
+                    &quot;V. FURNISHINGS, HOUSEHOLD EQUIPMENT AND ROUTINE MAINTENANCE OF THE  HOUSE&quot; = &quot;05&quot;, 
+                    &quot;VI. HEALTH&quot; = &quot;06&quot;, 
+                    &quot;VII. TRANSPORT&quot; = &quot;07&quot;, 
+                    &quot;VIII. COMMUNICATION&quot; = &quot;08&quot;, 
+                    &quot;IX. RECREATION AND CULTURE&quot; = &quot;09&quot;, 
+                    &quot;X. EDUCATION&quot; = &quot;10&quot;, 
+                    &quot;XI. RESTAURANT AND MISCELLANEOUS GOODS AND SERVICES&quot; = &quot;11&quot;)
+  ) -&gt; weights</code></pre>
+</div>
+<div id="first-look-at-the-dataset" class="section level2">
+<h2>First look at the dataset</h2>
+<pre class="r"><code># View dataset
+cpi_2006 </code></pre>
+<pre><code>## # A tibble: 316 x 2
+##    month  data             
+##    &lt;chr&gt;  &lt;list&gt;           
+##  1 Jan_94 &lt;tibble [88 x 6]&gt;
+##  2 Feb_94 &lt;tibble [88 x 6]&gt;
+##  3 Mar_94 &lt;tibble [88 x 6]&gt;
+##  4 Apr_94 &lt;tibble [88 x 6]&gt;
+##  5 May_94 &lt;tibble [88 x 6]&gt;
+##  6 Jun_94 &lt;tibble [88 x 6]&gt;
+##  7 Jul_94 &lt;tibble [88 x 6]&gt;
+##  8 Aug_94 &lt;tibble [88 x 6]&gt;
+##  9 Sep_94 &lt;tibble [88 x 6]&gt;
+## 10 Oct_94 &lt;tibble [88 x 6]&gt;
+## # ... with 306 more rows</code></pre>
+</div>
+<div id="exploratory-data-analysis" class="section level2">
+<h2>Exploratory Data Analysis</h2>
+<pre class="r"><code># Distribution of the class/target over the variable</code></pre>
+</div>
+<div id="feature-selection" class="section level2">
+<h2>Feature Selection</h2>
+<div id="test-for-multicollinearity" class="section level4">
+<h4>Test for Multicollinearity</h4>
+</div>
+<div id="filter-method" class="section level4">
+<h4>Filter method</h4>
+</div>
+<div id="wrapper-method" class="section level4">
+<h4>Wrapper method</h4>
+</div>
+</div>
+<div id="training-and-testing-splits" class="section level2">
+<h2>Training and Testing Splits</h2>
+</div>
+<div id="model-building" class="section level2">
+<h2>Model building</h2>
+</div>
+<div id="model-training" class="section level2">
+<h2>Model training</h2>
+</div>
+<div id="model-testing" class="section level2">
+<h2>Model testing</h2>
+</div>

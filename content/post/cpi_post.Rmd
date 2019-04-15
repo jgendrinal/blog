@@ -1,0 +1,179 @@
+---
+title: "TRAIN, inflation, and why economists think everything causes everything"
+author: 'Jose Francisco Endrinal'
+output: html_document
+date: "2019-04-14"
+---
+
+*DISCLAIMER: I am not a working data analyst, nor am I a data scientist. As such, the code, techniques, and methods used in this blog post do not qualify as industry-level code, techniques, and methods. This blog and its corresponding github repository are meant to document my progress as I come to learn the techniques and skills a data analyst or data scientist will be needing in their line of work. This style of learning is popularly called "Learning in Public"*
+
+Most people view the unusually high recent rise in prices as primarily caused by the newly promulgated TRAIN Law. Specifically, fuel prices are seen as the major factor to blame for pushing inflation higher than it has been for the last decade. And the way taxes work, you know that TRAIN definitely has something to do with price rises. The price of goods and services will rise if government will tax more for every unit sold. This is basic economics plain and simple.  
+But economic theory does not tell us that *only taxes on goods and services* cause inflation. Quite the contrary. Economics tells us that price changes happen due to a whole host of factors, including changes in supply, changes in demand, changes in cost of raw materials, and the like. So what we know so far without doing further analysis is that *some* of the increase is due to TRAIN, because increasing taxes on fuel increase the price of fuel, and because most industries and people use fuel, the price increase changes everything we buy.  
+
+The question of whether increased fuel prices caused inflation is answered. Some of the inflation was caused because of TRAIN. To answer whether TRAIN was a major or primary cause, we have to ask the following question: *how much* of the inflation is caused by a rise in fuel prices? Because if many factors cause inflation, then those other factors have to be taken into account.  
+
+To answer this question, we have to do some empirical analysis. We have to look at changes in the price level and see if it can be explained by a rise in fuel prices. We can do this by running a linear regression, which is basically a statistical method that finds the closest possible linear relationship between one piece of data, and another. But we said that in economic theory there are many causes for price changes. This means we have to run a multiple linear regression, where we have one $y$ (price level) and multiples $x$s. This is usually expressed in the following formula:
+
+$$y = \beta_{0} + \beta_{1}x_{1} + \beta_{2}x_{2} + ... \beta_{n}x_{n} + \varepsilon$$
+where the $x$s represent the factors we are considering, the $\beta$s represent the overall effect of one increment of each $x$ on the $y$, and $\varepsilon$ captures any error in the equation.  
+
+This blog post cannot promise a thorough analysis, but hopefully this would be a good starting point for someone to better understand how many factors can affect the overall price level.  
+
+Let's attempt the analysis by loading up the R code.  
+
+## Setup
+
+Let's load up our libraries and our dataset.
+
+```{r warning=FALSE, message=FALSE}
+# Load packages
+library(readr)
+library(readxl)
+library(dplyr)
+library(tidyr)
+library(stringr)
+# Load dataset
+read_csv("data/CPI_2006=100_1994-2018_2.csv") %>% 
+  select(-`Geographic code`, 
+         -`Geographic code_1`) %>% 
+  filter(`Geographic Location` == "Philippines") %>% 
+  select(-`Geographic Location`) %>% 
+  gather(key = "month", value = "cpi", -Code, -Description) %>% 
+  mutate(Code = gsub('^\"(.+)\"$', 
+                     "\\1", Code)) %>% 
+  separate(Code, 
+           into = c("family", 
+                    "genus", 
+                    "species"), 
+           sep = "\\.", 
+           remove = TRUE, 
+           fill = "right") %>% 
+  filter (family != 0) %>% 
+  separate(species, 
+           into = c("species", 
+                    "subspecies"), 
+           sep = 1, 
+           convert = TRUE) %>% 
+  filter(Description != "Bread And Cereals") %>% 
+  filter(!is.na(species) | !is.na(species)) %>% 
+  nest(-month) -> cpi_2006
+```
+
+We include the weights of the CPI to be able to map actual goods to the price level.  
+
+```{r}
+# Define weights
+read_excel("data/Weights by Commodity Group for CPI_2012 and 2006 based, Philippines, NCR, and AONCR_2.xlsx", 
+           skip = 6) %>% 
+  filter_all(all_vars(!is.na(.))) %>% 
+  rename(item = `COMMODITY  GROUP`, 
+         w_2012 = `20012-based`, 
+         w_2006 = `2006-based`) %>% 
+  filter(item != "ALL ITEMS", 
+         item != "NON-FOOD") %>% 
+  # Extract family from "I.  XXX" format
+  mutate(family = if_else(grepl("^.*\\. .*$", item), item, NA_character_)) %>% 
+  fill(family) %>% 
+  # Extract family from "* XXX" format
+  mutate(n = 1:n(), 
+         genus = if_else(grepl("^\\* .*", item), item, NA_character_)) %>% 
+  fill(genus) %>% 
+  mutate(genus = if_else(n < 16, genus, NA_character_)) %>% 
+  # Extract species
+  mutate(species = if_else(!grepl("(^\\* .*)|(^.*\\. .*$)", 
+                                 item), 
+                           item, NA_character_)) %>% 
+  filter(n != 19) %>% 
+  # pass family to species
+  mutate(species = if_else(family == "* Non-alcoholic Beverages" & !is.na(family), 
+                           "* Non-alcoholic Beverages", 
+                           species), 
+         family = if_else(is.na(family) & !is.na(species), species, family)) %>% 
+  filter(!is.na(species)) %>% 
+  select(-item, -n) %>% 
+  select(family, genus, species, w_2006, w_2012) %>% 
+  # Include subspecies for bread and cereals
+  mutate(
+    n = 1:n(), 
+    subspecies = if_else(n %in% c(2, 3, 4), species, NA_character_), 
+    species = if_else(n %in% c(2, 3, 4), "Bread and Cereals",  species)
+    ) %>% 
+  # Mass recode of weight descriptions
+  mutate(
+    family = recode(family, 
+                    "I. FOOD AND NON-ALCHOLIC BEVERAGES" = "01", 
+                    "II. ALCOHOLIC BEVERAGES AND TOBACCO" = "02", 
+                    "III. CLOTHING AND FOOTWEAR" = "03", 
+                    "IV. HOUSING, WATER, ELECTRICITY, GAS AND OTHER FUELS" = "04", 
+                    "V. FURNISHINGS, HOUSEHOLD EQUIPMENT AND ROUTINE MAINTENANCE OF THE  HOUSE" = "05", 
+                    "VI. HEALTH" = "06", 
+                    "VII. TRANSPORT" = "07", 
+                    "VIII. COMMUNICATION" = "08", 
+                    "IX. RECREATION AND CULTURE" = "09", 
+                    "X. EDUCATION" = "10", 
+                    "XI. RESTAURANT AND MISCELLANEOUS GOODS AND SERVICES" = "11")
+  ) -> weights
+```
+
+## First look at the dataset
+
+```{r}
+# View dataset
+cpi_2006 
+```
+
+
+## Exploratory Data Analysis
+
+```{r}
+# Distribution of the class/target over the variable
+
+```
+
+
+## Feature Selection
+
+
+#### Test for Multicollinearity
+
+```{r}
+
+```
+
+#### Filter method
+```{r}
+
+```
+
+#### Wrapper method
+```{r}
+
+```
+
+
+## Training and Testing Splits
+
+```{r}
+
+```
+
+
+## Model building
+
+```{r}
+
+```
+
+
+## Model training
+
+```{r}
+
+```
+
+
+## Model testing
+
+```{r}
+
+```
