@@ -1,6 +1,6 @@
 ---
 title: "The data salaryman"
-output: md_document
+output: github_document
 ---
 
 Source repo for [https://jgendrinal.github.io](https://jgendrinal.github.io)
