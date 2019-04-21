@@ -162,11 +162,3 @@ filter(iris.dt, class %in% c("versicolor")) %>%
 ```
 
 We have to smoothen this dataset so we can make a fair model out of it. But that can be a post for another time.   
-
-***
-More dataset information: [[Dataset description]](link to website)  
-
-Feedback:  
-Email: francis.endrinal@gmail.com  
-FB Messenger: m.me/transparencyman  
-Twitter, Instagram: @jgendrinal
