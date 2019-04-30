@@ -1,0 +1,66 @@
+---
+title: "mtcars"
+author: "Jose Francisco Endrinal"
+date: "2019-04-26"
+output: html_document
+---
+
+The mtcars dataset is 
+
+```{r}
+# Load packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(purrr)
+library(rlang)
+
+# Load dataset
+as_tibble(mtcars) -> mtcars
+```
+
+```{r}
+mtcars
+```
+
+Let's check if `cyl`, `vs`, `am`, and `gear` are discrete variables. 
+
+```{r}
+tibble(var = c("cyl", "vs", "am", "gear")) %>% 
+  mutate(values = map(var, function(x) {
+    unique(mtcars[[x]]) %>% as.character()
+  })) %>% 
+  unnest()
+```
+
+We can safely convert this to character variables.
+
+```{r}
+mtcars <- mtcars %>% 
+  mutate_at(c("cyl", "vs", "am", "gear"), as.character)
+mtcars
+```
+
+## Exploratory data analysis
+
+```{r}
+select_if(mtcars, is.numeric) %>% 
+  gather(-mpg, key = "var", value = "value") %>% 
+  ggplot(aes(x = value, y = mpg)) + 
+  geom_point() + 
+  facet_wrap(~var)
+```
+
+Let's try that again without disp and hp. 
+
+```{r}
+select_if(mtcars, is.numeric) %>% 
+  select(-disp, -hp) %>% 
+  gather(-mpg, key = "var", value = "value") %>% 
+  ggplot(aes(x = value, y = mpg)) + 
+  geom_point() + 
+  facet_wrap(~var)
+```
+
+Much better. 
+
