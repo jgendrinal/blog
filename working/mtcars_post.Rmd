@@ -26,7 +26,7 @@ mtcars
 Let's check if `cyl`, `vs`, `am`, and `gear` are discrete variables. 
 
 ```{r}
-tibble(var = c("cyl", "vs", "am", "gear")) %>% 
+tibble(var = c("cyl", "vs", "am", "gear", "carb")) %>% 
   mutate(values = map(var, function(x) {
     unique(mtcars[[x]]) %>% as.character()
   })) %>% 
@@ -37,7 +37,7 @@ We can safely convert this to character variables.
 
 ```{r}
 mtcars <- mtcars %>% 
-  mutate_at(c("cyl", "vs", "am", "gear"), as.character)
+  mutate_at(c("cyl", "vs", "am", "gear", "carb"), as.character)
 mtcars
 ```
 
@@ -62,5 +62,24 @@ select_if(mtcars, is.numeric) %>%
   facet_wrap(~var)
 ```
 
-Much better. 
+Much better. But we can make zoom in on those variables that are still too tight. 
+
+```{r}
+select(mtcars, mpg, carb, drat, wt) %>% 
+  gather(-mpg, key = "var", value = "value") %>% 
+  ggplot(aes(x = value, y = mpg)) + 
+  geom_point() + 
+  facet_wrap(~var)
+```
+
+Good. Now for the categorical variables. 
+
+```{r}
+select_if(mtcars, is.character) %>% 
+  gather(key = "var", value = "value") %>% 
+  ggplot(aes(x = value)) + 
+  geom_bar(stat = "count") + 
+  facet_wrap(~var)
+  
+```
 
