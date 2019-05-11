@@ -7,8 +7,20 @@ date: "2019-02-19"
 
 
 <p>Whether you’re a drinker or not, chances are that alcohol has played some part in the culture of where you live. It would be awesome to take measurements on any wine and be able to determine what kind of wine it was. In this dataset, we’re sticking with three unidentified types of wine.</p>
-<p>The wine dataset is a series of measurements of different samples of three types of wine. In this dataset, there are thirteen characteristics that were measured: 1. Alcohol 2. Malic acid 3. Ash 4. Alcalinity of ash<br />
-5. Magnesium 6. Total phenols 7. Flavanoids 8. Nonflavanoid phenols 9. Proanthocyanins 10. Color intensity 11. Hue 12. OD280/OD315 of diluted wines 13. Proline</p>
+<p>The wine dataset is a series of measurements of different samples of three types of wine. In this dataset, there are thirteen characteristics that were measured:
+1. Alcohol
+2. Malic acid
+3. Ash
+4. Alcalinity of ash<br />
+5. Magnesium
+6. Total phenols
+7. Flavanoids
+8. Nonflavanoid phenols
+9. Proanthocyanins
+10. Color intensity
+11. Hue
+12. OD280/OD315 of diluted wines
+13. Proline</p>
 <p>Unfortunately, we do not have the units of these measurements and simply have to rely on their relative values.</p>
 <pre class="r"><code># Loading package
 suppressPackageStartupMessages({
@@ -129,7 +141,7 @@ tt.sets &lt;- tt.sets %&gt;%
          hit = map2_dbl(pred, resp, mnom_mscore))
 score &lt;- summarise(tt.sets, score = mean(hit))
 score[[1]]</code></pre>
-<pre><code>## [1] 0.9275926</code></pre>
+<pre><code>## [1] 0.9351852</code></pre>
 <p>With an accuraccy of about ~93 percent, this model can still do better, but this is a great starting point for it.</p>
 </div>
 <div id="distribution-of-scores" class="section level2">

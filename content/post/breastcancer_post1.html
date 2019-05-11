@@ -61,8 +61,7 @@ read_csv(&quot;data/breastcancer.csv&quot;) %&gt;%
 <li><p>Having nine variables here makes it so much harder to visualize. We can’t do the Petal.length and Petal.width scatterplot graph I did in my previous post. And no, a boxplot visualization will not help, since as mentioned before, our dataset behaves ordinally.</p></li>
 <li><p>The variable bare has dirty data that needs cleaning. We already filtered that in the previous code. I feel like a whole other post should be dedicated to data cleaning.</p></li>
 </ol>
-<div id="exploratory-data-analysis" class="section level1">
-<h1>Exploratory Data Analysis</h1>
+<p>#Exploratory Data Analysis</p>
 <p>Let’s take a look at what these variables look like. We can’t use a boxplot to show this, since this isn’t continuous, it might be wise to plot a bar graph with different facets for this visualization.</p>
 <p>Let’s see what that looks like for each class:</p>
 <pre class="r"><code>gather(breastcancer, key, value, -class) %&gt;% 
@@ -72,7 +71,8 @@ read_csv(&quot;data/breastcancer.csv&quot;) %&gt;%
   ggplot(aes(x = value)) + 
   geom_bar(aes(fill = class)) + 
   facet_wrap(~ key, nrow = 3, ncol = 3)</code></pre>
-<p><img src="/post/breastcancer_post1_files/figure-html/unnamed-chunk-3-1.png" width="672" /> Before we take a step further, we have to make clear what we want in this visualization. Personally, from here, I want to find a way to decrease the number of variables we can work with so we can visualize their relationship in easy charts. Decreasing the number of variables (or dimensionality reduction) is normally done with more variables than now, but it would be wise for the reader to know that this exists.</p>
+<p><img src="/post/breastcancer_post1_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+Before we take a step further, we have to make clear what we want in this visualization. Personally, from here, I want to find a way to decrease the number of variables we can work with so we can visualize their relationship in easy charts. Decreasing the number of variables (or dimensionality reduction) is normally done with more variables than now, but it would be wise for the reader to know that this exists.</p>
 <p>The variables we want would show that as you increase the value of our variable, benign cases decrese (increase) and malignant cases increase (decrease). And we want to show that this relationship is smooth all the way, that for every decrease in one class, there seems to be an increase in another class.</p>
 <p>Looking at the charts above, we’ll want to remove sing.epith, mitos, bland, and adhes, but before we exclude that from our model right away, we have to use a process that makes this more deliberate.</p>
 <p>We’ll be finding linear combinations that maximize the variance of the predicted value. From there, we will We’re going to perform Principal Component Analysis (PCA).</p>
@@ -109,7 +109,8 @@ pca$rotation</code></pre>
 ## shape       0.35071156  0.23602488  0.65226811 -0.133049977
 ## sing.epith -0.31110080 -0.75372049  0.10723423 -0.030845871
 ## size        0.19801568  0.13611938 -0.73263976  0.069590319</code></pre>
-<p>Because I have the benefit of this being a really rough way to work with our data. What I’ll be doing is that I’ll be picking out the variables that show the highest coefficients in any of the components. I’ll be picking out five. Here are the variables we will be using: mitos, c.thick, norm, bare, size</p>
+<p>Because I have the benefit of this being a really rough way to work with our data. What I’ll be doing is that I’ll be picking out the variables that show the highest coefficients in any of the components. I’ll be picking out five.
+Here are the variables we will be using: mitos, c.thick, norm, bare, size</p>
 <p>Let’s zoom in these variables:</p>
 <pre class="r"><code>select(breastcancer, mitos, c.thick, norm, bare, size, class) %&gt;% 
   gather(key, value, -class) %&gt;% 
@@ -119,7 +120,8 @@ pca$rotation</code></pre>
   ggplot(aes(value)) + 
   geom_bar(aes(fill = class)) + 
   facet_wrap(~ key, nrow = 2, ncol = 3)</code></pre>
-<p><img src="/post/breastcancer_post1_files/figure-html/unnamed-chunk-6-1.png" width="672" /> All the variables except for mitos have a clear trade-off: As you increase the value, you will give up class ‘0’ for class ‘1’.</p>
+<p><img src="/post/breastcancer_post1_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+All the variables except for mitos have a clear trade-off: As you increase the value, you will give up class ‘0’ for class ‘1’.</p>
 <p>Let’s try making mitos interact with the other variables:</p>
 <pre class="r"><code>select(breastcancer, mitos, c.thick, norm, bare, size) %&gt;% 
   gather(key, value, -mitos) %&gt;% 
@@ -130,10 +132,8 @@ pca$rotation</code></pre>
   geom_tile(aes(fill = count)) + 
   facet_wrap(~ key, nrow = 2, ncol = 2)</code></pre>
 <p><img src="/post/breastcancer_post1_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
-</div>
-<div id="train-test-sets" class="section level1">
-<h1>Train, Test Sets</h1>
-<p>A friend of mine recommended that I make a data frame of multiple training and test sets, run my model through all of them and get the average of the result. In my previous post, I made one training and testing split, but now here, we will be making 100 pairs of splits.</p>
+<p>#Train, Test Sets
+A friend of mine recommended that I make a data frame of multiple training and test sets, run my model through all of them and get the average of the result. In my previous post, I made one training and testing split, but now here, we will be making 100 pairs of splits.</p>
 <p>We’ll be dividing our dataset into 70% of the observations for the train set and 30% of the observations as the test set.</p>
 <pre class="r"><code>set.seed(2387)
 # create dataframe of train, test sets
@@ -181,11 +181,10 @@ tt.sets</code></pre>
   geom_text(aes(label = value), size = 3) + 
   transition_manual(.id)</code></pre>
 <pre><code>## nframes and fps adjusted to match transition</code></pre>
-<p><img src="/post/breastcancer_post1_files/figure-html/unnamed-chunk-9-1.gif" /><!-- --> As you can see in the animation above, the red and blue text is randomly picked from whe whole dataset, which means that these train and test sets are randomly picked. This is important for us when coming up with a score for the model. We want to know if this will work well for more than just one test set.</p>
-</div>
-<div id="logistical-regression" class="section level1">
-<h1>Logistical Regression</h1>
-<p>Logistic regression is a model fit for analyzing how input variables relate to the outcomes of success (1) or failure (0). The input variables don’t have to also be dummy variables (1 or 0), and can be counted variables or measured variables.</p>
+<p><img src="/post/breastcancer_post1_files/figure-html/unnamed-chunk-9-1.gif" /><!-- -->
+As you can see in the animation above, the red and blue text is randomly picked from whe whole dataset, which means that these train and test sets are randomly picked. This is important for us when coming up with a score for the model. We want to know if this will work well for more than just one test set.</p>
+<p>#Logistical Regression
+Logistic regression is a model fit for analyzing how input variables relate to the outcomes of success (1) or failure (0). The input variables don’t have to also be dummy variables (1 or 0), and can be counted variables or measured variables.</p>
 <p>Logistical regression looks very similar to linear regression – y = B0 + B1*X in the sense that the form is very similar. In fact, you could be just fine doing good old linear regression. The problem is that if you draw a straight line in the middle of your observations, your predictions might not always between 1 or 0 – a big problem, because your values are only 1 or 0.</p>
 <p>With the splits of train and test all ready, we can apply logistic regression on the training and test sets.</p>
 <p>We implement the logistic regression algorithm with the following code:</p>
@@ -214,6 +213,5 @@ tt.sets &lt;- tt.sets %&gt;%
          hit = map2_dbl(pred, resp, lgit_mscore))
 score &lt;- summarise(tt.sets, score = mean(hit))
 score[[1]]</code></pre>
-<pre><code>## [1] 0.9653171</code></pre>
+<pre><code>## [1] 0.9656585</code></pre>
 <p>Fortunately for us, you can actually view what this model looks like. We can check out the marginal effects of our four chosen variables and we can do it for each training and test set. But that’s a blog post for another time.</p>
-</div>

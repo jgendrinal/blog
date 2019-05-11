@@ -13,7 +13,9 @@ output: html_document
 <p><em>Now, I’m not an expert in data science or a data analyst (not yet). So I don’t intend to do all the algorithm code from scratch. Instead, I will borrow tools that have alredy been made by others.</em></p>
 <p>I’ll be using <a href="https://cran.r-project.org/">R</a> to write out how each algorithm, visualization, and data transformation was made. The R language is a programming language used for statistical analysis. It was initially very clunky and difficult to understand, because it wasn’t really made for clean code. Fortunately for us, the workflow in R became much easier to use when Hadley Wickam made a package (set of handy functions and tools for R programming) called <a href="https://www.tidyverse.org/"><em>tidyverse</em></a>. Tidyverse creates a very beautiful space for people to do their analysis on R.</p>
 <p>This post was created on R Notebooks, which makes it easier for me to type out a document and program within that document at the same time.</p>
-<p>Okay, let’s take a look at a piece of the dataset, but before that we have to do two things before anything else: 1) Load all necessary packages 2) Import our dataset</p>
+<p>Okay, let’s take a look at a piece of the dataset, but before that we have to do two things before anything else:
+1) Load all necessary packages
+2) Import our dataset</p>
 <pre class="r"><code>suppressPackageStartupMessages({
   library(tidyverse)
   library(modelr) # for train, test split
@@ -51,10 +53,7 @@ read_csv(&quot;data/iris.csv&quot;) %&gt;%
 <p>It turns out that this dataset was used to try to make a computer predict which specimens (in rows) belonged to each species of Iris flower. This sort of problem was up in the air in the time before genetics was used to classify animals. At the time, scientists depended on what these species looked like in order to make the distinctions (on why this is wrong <a href="http://www.iapt-taxon.org/historic/Congress/IBC_1959/Prop018-019.pdf">here</a>).</p>
 <p>This data was used in 1936 by Ronald A. Fisher to determine if you can identify species of Iris flower just by measuring the lengths and widths of sepals and petals. He published his results <a href="http://rcs.chemometrics.ru/Tutorials/classification/Fisher.pdf">here</a>.</p>
 <p>And just so the reader understands what exactly the petals and the sepals of a flower are, we have a very helpful image labeling the parts of the flower:</p>
-<div class="figure">
-<img src="/post/iris_post_files/parts.gif" />
-
-</div>
+<p><img src="/post/iris_post_files/parts.gif" /></p>
 <p>Here’s a rough and simple-worded way of differentiating them:</p>
 <p>Petals - the often vibrantly colored fans that cover the inner part of the flower<br />
 Sepals - the often green fan base that serves as a cup for the flower to sit on</p>
@@ -117,7 +116,7 @@ iris.te %&gt;% # testing and scoring our model
     ) -&gt; iris.pr
 score &lt;- summarise(iris.pr, score = mean(hit))
 score[[1]]</code></pre>
-<pre><code>## [1] 0.9318182</code></pre>
+<pre><code>## [1] 0.9545455</code></pre>
 <p>Let’s check how that decision tree looks like:</p>
 <pre class="r"><code>prp(dt)</code></pre>
 <p><img src="/post/iris_post_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
@@ -148,7 +147,7 @@ kNN &lt;- knn1(train = select(iris.tr, -Species) %&gt;% as_data_frame(),
   ) -&gt; iris.pr
 score &lt;- summarise(iris.pr, score = mean(hit)) #scoring
 score[[1]]</code></pre>
-<pre><code>## [1] 0.9545455</code></pre>
+<pre><code>## [1] 0.9772727</code></pre>
 <p>This model is better than our previous algorithm at more than 95%. Let’s see how well this model classified our dataset:</p>
 <pre class="r"><code>iris.pr %&gt;% 
   ggplot(aes(x = Petal.length, y = Petal.width)) + 
@@ -158,7 +157,7 @@ score[[1]]</code></pre>
 </div>
 <div id="support-vector-classification-svc" class="section level2">
 <h2>Support vector classification (SVC)</h2>
-<p>Our last model seems to be the most difficult of the three to talk about. Partly because you have to explain to the reader what a support vector actually is and what the algorithm maximizes in order to classify the specimens into their species. And then there’s the concept of a “kernel”&quot; which is another concept to get into. Put generally, this model takes the clusters and tries its very hardest to maximize the distance between them.<br />
+<p>Our last model seems to be the most difficult of the three to talk about. Partly because you have to explain to the reader what a support vector actually is and what the algorithm maximizes in order to classify the specimens into their species. And then there’s the concept of a “kernel”" which is another concept to get into. Put generally, this model takes the clusters and tries its very hardest to maximize the distance between them.<br />
 The algorithm is executed with the following R code:</p>
 <pre class="r"><code>set.seed(2387)
 SVM &lt;- svm(x = select(iris.tr, -Species), 
@@ -172,7 +171,7 @@ iris.te %&gt;%
     ) -&gt; iris.pr
 score &lt;- summarise(iris.pr, score = mean(hit))
 score[[1]]</code></pre>
-<pre><code>## [1] 0.9545455</code></pre>
+<pre><code>## [1] 0.9772727</code></pre>
 <p>When we run this code we have the same accuracy as the previous algorithm. I’d like to stress that this is the most basic of this type of algorithm and so the accuracy might change if we tweak the algorithm a bit. But we won’t be doing that here.</p>
 <p>Let’s take a look at where it made errors:</p>
 <pre class="r"><code>iris.pr %&gt;% 
