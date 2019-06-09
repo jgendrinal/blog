@@ -7,7 +7,11 @@ About me
 --------
 Hi! You can call me Francis. I work in consulting for banks and similar companies. Much of what I do is data import, cleanup, analysis, and presentation for the clients we serve. I write this blog to document my journey in getting better at working with data, while working at a full-time job.  
 
-![](/static/about_files/IMG20190429063305.jpg)
+<div style = "width:image width px; font-size:80%; text-align:center;"> 
+<img src="/about_files/IMG20190429063305.jpg" width="width" height="height" style = "padding-bottom:0.5em;" />
+<br>
+Me, early in the office ahead of my manager. I sent him this photo shortly after.
+</div> 
 
 Python and R are favorites, but R is my tool of choice. Partly because it was taught in college. But also because the R community produces really great tools that are just not available yet elsewhere.  
 
@@ -28,5 +32,5 @@ I consider myself part of the second camp. Many of these companies are still in 
 Where to contact me
 -------------------
 Twitter: [@livingwithdata](https://twitter.com/livingwithdata)  
-Mail: francis.endrinal@gmail.com  
+Mail: livingwithdata@gmail.com  
 [LinkedIn](https://www.linkedin.com/in/jose-francisco-endrinal-9861687a/)
