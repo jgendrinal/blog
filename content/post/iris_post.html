@@ -46,7 +46,7 @@ read_csv(&quot;data/iris.csv&quot;) %&gt;%
 ##  8          5           3.4          1.5         0.2 Iris-setosa
 ##  9          4.4         2.9          1.4         0.2 Iris-setosa
 ## 10          4.9         3.1          1.5         0.1 Iris-setosa
-## # ... with 140 more rows</code></pre>
+## # … with 140 more rows</code></pre>
 <p>There are five columns in this dataset with the following variable names: Sepal.length, Sepal.width, Petal.length, Petal.width, and Species.</p>
 <p>The first four variables are real measurements made in centimeters. All of the specimens of Iris (irises or iri?) were taken from the same location, measured by the same person, and with the same instrument to measure.</p>
 <p>But what are these measurements? And why are these parts of the flower so important?</p>
@@ -157,7 +157,7 @@ score[[1]]</code></pre>
 </div>
 <div id="support-vector-classification-svc" class="section level2">
 <h2>Support vector classification (SVC)</h2>
-<p>Our last model seems to be the most difficult of the three to talk about. Partly because you have to explain to the reader what a support vector actually is and what the algorithm maximizes in order to classify the specimens into their species. And then there’s the concept of a “kernel”" which is another concept to get into. Put generally, this model takes the clusters and tries its very hardest to maximize the distance between them.<br />
+<p>Our last model seems to be the most difficult of the three to talk about. Partly because you have to explain to the reader what a support vector actually is and what the algorithm maximizes in order to classify the specimens into their species. And then there’s the concept of a “kernel”&quot; which is another concept to get into. Put generally, this model takes the clusters and tries its very hardest to maximize the distance between them.<br />
 The algorithm is executed with the following R code:</p>
 <pre class="r"><code>set.seed(2387)
 SVM &lt;- svm(x = select(iris.tr, -Species), 

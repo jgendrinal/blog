@@ -3,8 +3,8 @@ date: "2019-04-14"
 title: About this site
 ---
 
-About me
---------
+## About me
+
 Hi! You can call me Francis. I work in consulting for banks and similar companies. Much of what I do is data import, cleanup, analysis, and presentation for the clients we serve. I write this blog to document my journey in getting better at working with data, while working at a full-time job.  
 
 <div style = "width:image width px; font-size:80%; text-align:center;"> 
@@ -15,8 +15,8 @@ Me, early in the office ahead of my manager. I sent him this photo shortly after
 
 Python and R are favorites, but R is my tool of choice. Partly because it was taught in college. But also because the R community produces really great tools that are just not available yet elsewhere.  
 
-Why "data salaryman"?
----------------------
+## Why "data salaryman"?
+
 Fancy deep learning models, "big data" infrastructures, and flashy visualizations are not that interesting to me. There are data problems in front of the firm and our clients that have to be dealt with before we get there. They include cleaning messy data we inherit, creating meaningful visualizations and reports, and convinving management that a data strategy is important.  
 
 *These are the things that professionals working with data deal with every day. This site is about that work, particularly mine. Hopefully, the people reading this can learn something about the unique challenges working with data, and, hopefully, how those challenges can be overcome.*  
@@ -29,8 +29,8 @@ I consider myself part of the second camp. Many of these companies are still in 
 
 
 
-Where to contact me
--------------------
-Twitter: [@livingwithdata](https://twitter.com/livingwithdata)  
-Mail: livingwithdata@gmail.com  
-[LinkedIn](https://www.linkedin.com/in/jose-francisco-endrinal-9861687a/)
+## Where to contact me  
+ 
+[Twitter - \@livingwithdata](https://twitter.com/livingwithdata)  
+[Email - livingwithdata\@gmail\.com](mailto:livingwithdata@gmail.com)  
+[LinkedIn Profile](https://www.linkedin.com/in/jose-francisco-endrinal-9861687a/)

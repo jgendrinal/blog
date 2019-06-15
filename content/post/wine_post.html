@@ -56,7 +56,7 @@ read_csv(&quot;data/wine.csv&quot;) %&gt;%
 ##  8     1    14.1    2.15  2.61    17.6    121     2.6    2.51    0.31 
 ##  9     1    14.8    1.64  2.17    14       97     2.8    2.98    0.290
 ## 10     1    13.9    1.35  2.27    16       98     2.98   3.15    0.22 
-## # ... with 168 more rows, and 5 more variables: proanth &lt;dbl&gt;,
+## # … with 168 more rows, and 5 more variables: proanth &lt;dbl&gt;,
 ## #   col.Int &lt;dbl&gt;, hue &lt;dbl&gt;, dil &lt;dbl&gt;, proline &lt;dbl&gt;</code></pre>
 <p>Looking at the dataset alone, we can see that most of these variables are continuous. But we have too many characteristics to work with, hurting the insight we could gain. Let’s try to do what we did last time with our <a href="">breast cancer dataset</a>. We need to see if there may be an apparent way to separate the classes and the characteristics based on visualization alone.</p>
 <div id="exploratory-data-analysis" class="section level3">
@@ -92,19 +92,19 @@ tt.sets &lt;- select(wine,
          test.s = map(test, as_data_frame))</code></pre>
 <pre class="r"><code>tt.sets</code></pre>
 <pre><code>## # A tibble: 100 x 7
-##    train      test       .id   ind.tr    ind.te    train.s      test.s     
-##    &lt;list&gt;     &lt;list&gt;     &lt;chr&gt; &lt;list&gt;    &lt;list&gt;    &lt;list&gt;       &lt;list&gt;     
-##  1 &lt;S3: resa~ &lt;S3: resa~ 001   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-##  2 &lt;S3: resa~ &lt;S3: resa~ 002   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-##  3 &lt;S3: resa~ &lt;S3: resa~ 003   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-##  4 &lt;S3: resa~ &lt;S3: resa~ 004   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-##  5 &lt;S3: resa~ &lt;S3: resa~ 005   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-##  6 &lt;S3: resa~ &lt;S3: resa~ 006   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-##  7 &lt;S3: resa~ &lt;S3: resa~ 007   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-##  8 &lt;S3: resa~ &lt;S3: resa~ 008   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-##  9 &lt;S3: resa~ &lt;S3: resa~ 009   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-## 10 &lt;S3: resa~ &lt;S3: resa~ 010   &lt;int [12~ &lt;int [54~ &lt;tibble [12~ &lt;tibble [5~
-## # ... with 90 more rows</code></pre>
+##    train     test      .id   ind.tr     ind.te   train.s       test.s      
+##    &lt;list&gt;    &lt;list&gt;    &lt;chr&gt; &lt;list&gt;     &lt;list&gt;   &lt;list&gt;        &lt;list&gt;      
+##  1 &lt;resampl… &lt;resampl… 001   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+##  2 &lt;resampl… &lt;resampl… 002   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+##  3 &lt;resampl… &lt;resampl… 003   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+##  4 &lt;resampl… &lt;resampl… 004   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+##  5 &lt;resampl… &lt;resampl… 005   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+##  6 &lt;resampl… &lt;resampl… 006   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+##  7 &lt;resampl… &lt;resampl… 007   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+##  8 &lt;resampl… &lt;resampl… 008   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+##  9 &lt;resampl… &lt;resampl… 009   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+## 10 &lt;resampl… &lt;resampl… 010   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+## # … with 90 more rows</code></pre>
 <p>Now that we have the train and test sets, we can build our multinomial logistic regression model using the <code>nnet</code> package.</p>
 </div>
 <div id="building-the-multinomial-regression-model" class="section level2">
