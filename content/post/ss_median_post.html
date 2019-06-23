@@ -1,0 +1,52 @@
+---
+title: 'SundayStats: median()'
+author: "Jose Francisco Endrinal"
+date: "2019-06-20"
+output: html_document
+---
+
+
+
+<p>The median is a statistical measure of central tendency of a variable given an ordered position of its variables. It has several advantages over the mean. One is that it is not affected as much by extreme values, which is an advantage if you variable is very dependent on extreme values like income and number of children. R’s implementation of the <code>median()</code> function depends on the input, and can be controlled.</p>
+<pre class="r"><code>median</code></pre>
+<pre><code>## function (x, na.rm = FALSE, ...) 
+## UseMethod(&quot;median&quot;)
+## &lt;bytecode: 0x55c8fd5aec98&gt;
+## &lt;environment: namespace:stats&gt;</code></pre>
+<p>R assigns a median method that can work depending on the variable you input in <code>x</code>. By default, R computes the median in the following manner:</p>
+<pre class="r"><code>median.default</code></pre>
+<pre><code>## function (x, na.rm = FALSE, ...) 
+## {
+##     if (is.factor(x) || is.data.frame(x)) 
+##         stop(&quot;need numeric data&quot;)
+##     if (length(names(x))) 
+##         names(x) &lt;- NULL
+##     if (na.rm) 
+##         x &lt;- x[!is.na(x)]
+##     else if (any(is.na(x))) 
+##         return(x[FALSE][NA])
+##     n &lt;- length(x)
+##     if (n == 0L) 
+##         return(x[FALSE][NA])
+##     half &lt;- (n + 1L)%/%2L
+##     if (n%%2L == 1L) 
+##         sort(x, partial = half)[half]
+##     else mean(sort(x, partial = half + 0L:1L)[half + 0L:1L])
+## }
+## &lt;bytecode: 0x55c8fd27bcc0&gt;
+## &lt;environment: namespace:stats&gt;</code></pre>
+<p>The following lines are the real meat of the implementation:</p>
+<pre><code>if (n%%2L == 1L) 
+    sort(x, partial = half)[half]
+else mean(sort(x, partial = half + 0L:1L)[half + 0L:1L])</code></pre>
+<p>Lines 1 and here tell R to take the value at half + 1 of the sorted values, if it is not even, and line 3 tells R to take the average of the two middle values if it is not even.</p>
+<p>Again, pretty straightforward.</p>
+<p>Let’s see how this works:</p>
+<pre class="r"><code>data_odd &lt;- c(3, 4, 6, 7, 10, 12, 45)
+data_even &lt;- c(3, 4, 5, 5, 6, 10, 11)
+
+median(data_odd)</code></pre>
+<pre><code>## [1] 7</code></pre>
+<pre class="r"><code>median(data_even)</code></pre>
+<pre><code>## [1] 5</code></pre>
+<p>It works.</p>

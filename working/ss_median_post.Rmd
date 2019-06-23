@@ -1,7 +1,0 @@
----
-title: 'SundayStats: median()'
-author: "Jose Francisco Endrinal"
-date: "2019-05-05"
-output: html_document
----
-
