@@ -2,6 +2,7 @@
 title: "The MRT dataset: A Case in Exploratory Data Analysis"
 output: html_document
 date: "2018-05-09"
+image: "mrt-og-thumbnail.png"
 ---
 
 The Metro Rail Transit (MRT) is a light rail transit system in Metro Manila, Philippines that runs along Epifanio delos Santos Avenue (EDSA) from Taft Avenue Station in Manila, to North Avenue Station in Quezon City. This dataset is the hourly traffic of passengers going in and out of turnstiles at the different train stations covering the years 2012 to 2014.  

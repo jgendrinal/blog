@@ -3,6 +3,7 @@ title: "The breast cancer dataset"
 author: Jose Francisco Endrinal
 output: html_document
 date: "2017-10-16"
+image: "breastcancer-og-thumbnail.png"
 ---
 
 The breast cancer dataset is a dataset of several tumor examinations. The goal of this dataset was to use the characteristics of these tumors to identify if they were harmless or potentially cancerous. Just as a radiologist (?) would use his or her experience in identifying if these tumors are good or bad, the question of this dataset is: can a machine, with enough examples, do the same as well as or better than a radiologist can?  
@@ -17,7 +18,8 @@ suppressPackageStartupMessages({
   library(stats)
   library(modelr)
   library(gganimate)
-  library(animation)})
+  library(animation)
+  library(png)})
 # Load dataset, rename variables
 read_csv("data/breastcancer.csv") %>% 
   filter(X7 != "?") %>% 
@@ -144,7 +146,7 @@ So how will we visualize these training and test sets? All I really want to show
 ```{r}
 select(tt.sets, ind.tr, ind.te, .id) %>% 
   gather(key = "set", value = "value", ind.tr, ind.te, -.id) %>%
-  unnest() %>% 
+  unnest(value) %>% 
   arrange(by = .id, value) %>% 
   filter(.id %in% c("001", 
                     "002", 
@@ -160,9 +162,12 @@ select(tt.sets, ind.tr, ind.te, .id) %>%
     set = recode(set, 
                  "ind.tr" = "Train", 
                  "ind.te" = "Test")) %>% 
-  ggplot(aes(x.grid, y.grid, color = set)) + 
-  geom_text(aes(label = value), size = 3) + 
-  transition_manual(.id)
+  ungroup() %>% 
+  ggplot(aes(x = x.grid, y = y.grid, color = set)) + 
+  geom_text(aes(label = value, group = seq_along(.id)), size = 3) + 
+  transition_states(.id,
+                    transition_length = 2,
+                    state_length = 1)
 ```
 As you can see in the animation above, the red and blue text is randomly picked from whe whole dataset, which means that these train and test sets are randomly picked. This is important for us when coming up with a score for the model. We want to know if this will work well for more than just one test set.  
 

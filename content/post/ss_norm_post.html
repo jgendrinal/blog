@@ -1,7 +1,9 @@
 ---
 title: "SundayStats: A deep dive into the stats package in R - The Normal Distribution"
+author: "Jose Francisco Endrinal"
 output: html_document
 date: "2019-04-14"
+image: "default-og-thumbnail.png"
 ---
 
 
@@ -55,10 +57,10 @@ set.seed(2387) # for reproducibility
 df &lt;- rnorm(n = 1000, mean = 0, sd = 1)</code></pre>
 <p>Let’s see what df looks like.</p>
 <pre class="r"><code>df[1:20]</code></pre>
-<pre><code>##  [1] -2.24195119 -0.15248452 -1.02637909 -1.34431089  0.83206678
-##  [6] -0.54800567  1.17524440  2.10185227 -0.03451892  1.16019327
-## [11] -0.93559119  0.07057199  1.62092549  1.76834554  0.06896674
-## [16]  0.51217562 -1.08950799 -1.29309982  0.40148358  0.26479060</code></pre>
+<pre><code>##  [1] -2.24195119 -0.15248452 -1.02637909 -1.34431089  0.83206678 -0.54800567
+##  [7]  1.17524440  2.10185227 -0.03451892  1.16019327 -0.93559119  0.07057199
+## [13]  1.62092549  1.76834554  0.06896674  0.51217562 -1.08950799 -1.29309982
+## [19]  0.40148358  0.26479060</code></pre>
 <p>So far so good. But if you’re keen enough to notice. It will be hard to count the relative frequency of the values now, given that they never overlap. <code>ggplot</code>’s <code>geom_density</code> takes care of this by estimating the relative frequency, by looking at how close the values are to each other. The closer they are to each other, the more likely a value nearby will occur. Let’s plot df using the <code>geom_density</code> feature:</p>
 <pre class="r"><code>ggplot(data_frame(df = df), aes(df)) + 
   geom_density(fill = &quot;#4529A3&quot;, color = &quot;#4529A3&quot;, alpha = 0.25) + 

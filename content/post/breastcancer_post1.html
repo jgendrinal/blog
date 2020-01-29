@@ -3,6 +3,7 @@ title: "The breast cancer dataset"
 author: Jose Francisco Endrinal
 output: html_document
 date: "2017-10-16"
+image: "breastcancer-og-thumbnail.png"
 ---
 
 
@@ -16,7 +17,8 @@ date: "2017-10-16"
   library(stats)
   library(modelr)
   library(gganimate)
-  library(animation)})
+  library(animation)
+  library(png)})
 # Load dataset, rename variables
 read_csv(&quot;data/breastcancer.csv&quot;) %&gt;% 
   filter(X7 != &quot;?&quot;) %&gt;% 
@@ -145,23 +147,23 @@ tt.sets &lt;- select(breastcancer, bare, c.thick, norm, size, class) %&gt;%
          test.s = map(test, as_data_frame))
 tt.sets</code></pre>
 <pre><code>## # A tibble: 100 x 7
-##    train     test     .id   ind.tr    ind.te    train.s       test.s       
-##    &lt;list&gt;    &lt;list&gt;   &lt;chr&gt; &lt;list&gt;    &lt;list&gt;    &lt;list&gt;        &lt;list&gt;       
-##  1 &lt;resampl… &lt;resamp… 001   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
-##  2 &lt;resampl… &lt;resamp… 002   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
-##  3 &lt;resampl… &lt;resamp… 003   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
-##  4 &lt;resampl… &lt;resamp… 004   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
-##  5 &lt;resampl… &lt;resamp… 005   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
-##  6 &lt;resampl… &lt;resamp… 006   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
-##  7 &lt;resampl… &lt;resamp… 007   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
-##  8 &lt;resampl… &lt;resamp… 008   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
-##  9 &lt;resampl… &lt;resamp… 009   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
-## 10 &lt;resampl… &lt;resamp… 010   &lt;int [47… &lt;int [20… &lt;tibble [478… &lt;tibble [205…
+##    train     test      .id   ind.tr     ind.te     train.s        test.s        
+##    &lt;list&gt;    &lt;list&gt;    &lt;chr&gt; &lt;list&gt;     &lt;list&gt;     &lt;list&gt;         &lt;list&gt;        
+##  1 &lt;resampl… &lt;resampl… 001   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
+##  2 &lt;resampl… &lt;resampl… 002   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
+##  3 &lt;resampl… &lt;resampl… 003   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
+##  4 &lt;resampl… &lt;resampl… 004   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
+##  5 &lt;resampl… &lt;resampl… 005   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
+##  6 &lt;resampl… &lt;resampl… 006   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
+##  7 &lt;resampl… &lt;resampl… 007   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
+##  8 &lt;resampl… &lt;resampl… 008   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
+##  9 &lt;resampl… &lt;resampl… 009   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
+## 10 &lt;resampl… &lt;resampl… 010   &lt;int [478… &lt;int [205… &lt;tibble [478 … &lt;tibble [205 …
 ## # … with 90 more rows</code></pre>
 <p>So how will we visualize these training and test sets? All I really want to show is that these sets are really representative samples of the whole dataset. Since we have multiple training and test splits, we will be trying to make a gif using gganimate.</p>
 <pre class="r"><code>select(tt.sets, ind.tr, ind.te, .id) %&gt;% 
   gather(key = &quot;set&quot;, value = &quot;value&quot;, ind.tr, ind.te, -.id) %&gt;%
-  unnest() %&gt;% 
+  unnest(value) %&gt;% 
   arrange(by = .id, value) %&gt;% 
   filter(.id %in% c(&quot;001&quot;, 
                     &quot;002&quot;, 
@@ -177,10 +179,12 @@ tt.sets</code></pre>
     set = recode(set, 
                  &quot;ind.tr&quot; = &quot;Train&quot;, 
                  &quot;ind.te&quot; = &quot;Test&quot;)) %&gt;% 
-  ggplot(aes(x.grid, y.grid, color = set)) + 
-  geom_text(aes(label = value), size = 3) + 
-  transition_manual(.id)</code></pre>
-<pre><code>## nframes and fps adjusted to match transition</code></pre>
+  ungroup() %&gt;% 
+  ggplot(aes(x = x.grid, y = y.grid, color = set)) + 
+  geom_text(aes(label = value, group = seq_along(.id)), size = 3) + 
+  transition_states(.id,
+                    transition_length = 2,
+                    state_length = 1)</code></pre>
 <p><img src="/post/breastcancer_post1_files/figure-html/unnamed-chunk-9-1.gif" /><!-- -->
 As you can see in the animation above, the red and blue text is randomly picked from whe whole dataset, which means that these train and test sets are randomly picked. This is important for us when coming up with a score for the model. We want to know if this will work well for more than just one test set.</p>
 <p>#Logistical Regression

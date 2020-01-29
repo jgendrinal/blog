@@ -1,7 +1,9 @@
 ---
 title: "SundayStats: A deep dive into the stats package in R - The Normal Distribution"
+author: "Jose Francisco Endrinal"
 output: html_document
 date: "2019-04-14"
+image: "default-og-thumbnail.png"
 ---
 
 *DISCLAIMER: I am not a working data analyst, nor am I a data scientist. As such, the code, techniques, and methods used in this blog post do not qualify as industry-level code, techniques, and methods. This blog and its corresponding github repository are meant to document my progress as I come to learn the techniques and skills a data analyst or data scientist will be needing in their line of work. This style of learning is popularly called "Learning in Public"*

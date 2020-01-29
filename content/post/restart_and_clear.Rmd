@@ -2,6 +2,7 @@
 title: "Restarting and Clearing"
 output: html_document
 date: "2018-04-24"
+image: "restart-og-thumbnail.png"
 ---
 
 ## Introduction

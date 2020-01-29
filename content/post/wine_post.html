@@ -2,6 +2,7 @@
 title: "Wasted on data: Exploring the wine dataset"
 output: html_document
 date: "2019-02-19"
+image: "wine-og-thumbnail.png"
 ---
 
 
@@ -44,20 +45,20 @@ read_csv(&quot;data/wine.csv&quot;) %&gt;%
          dil = X13, 
          proline = X14) -&gt; wine</code></pre>
 <pre><code>## # A tibble: 178 x 14
-##    class alcohol mall.Ac   ash alk.Ash magnes tot.Phen flavan nonFl.ph
-##    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;
-##  1     1    14.2    1.71  2.43    15.6    127     2.8    3.06    0.28 
-##  2     1    13.2    1.78  2.14    11.2    100     2.65   2.76    0.26 
-##  3     1    13.2    2.36  2.67    18.6    101     2.8    3.24    0.3  
-##  4     1    14.4    1.95  2.5     16.8    113     3.85   3.49    0.24 
-##  5     1    13.2    2.59  2.87    21      118     2.8    2.69    0.39 
-##  6     1    14.2    1.76  2.45    15.2    112     3.27   3.39    0.34 
-##  7     1    14.4    1.87  2.45    14.6     96     2.5    2.52    0.3  
-##  8     1    14.1    2.15  2.61    17.6    121     2.6    2.51    0.31 
-##  9     1    14.8    1.64  2.17    14       97     2.8    2.98    0.290
-## 10     1    13.9    1.35  2.27    16       98     2.98   3.15    0.22 
-## # … with 168 more rows, and 5 more variables: proanth &lt;dbl&gt;,
-## #   col.Int &lt;dbl&gt;, hue &lt;dbl&gt;, dil &lt;dbl&gt;, proline &lt;dbl&gt;</code></pre>
+##    class alcohol mall.Ac   ash alk.Ash magnes tot.Phen flavan nonFl.ph proanth
+##    &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
+##  1     1    14.2    1.71  2.43    15.6    127     2.8    3.06    0.28     2.29
+##  2     1    13.2    1.78  2.14    11.2    100     2.65   2.76    0.26     1.28
+##  3     1    13.2    2.36  2.67    18.6    101     2.8    3.24    0.3      2.81
+##  4     1    14.4    1.95  2.5     16.8    113     3.85   3.49    0.24     2.18
+##  5     1    13.2    2.59  2.87    21      118     2.8    2.69    0.39     1.82
+##  6     1    14.2    1.76  2.45    15.2    112     3.27   3.39    0.34     1.97
+##  7     1    14.4    1.87  2.45    14.6     96     2.5    2.52    0.3      1.98
+##  8     1    14.1    2.15  2.61    17.6    121     2.6    2.51    0.31     1.25
+##  9     1    14.8    1.64  2.17    14       97     2.8    2.98    0.290    1.98
+## 10     1    13.9    1.35  2.27    16       98     2.98   3.15    0.22     1.85
+## # … with 168 more rows, and 4 more variables: col.Int &lt;dbl&gt;, hue &lt;dbl&gt;,
+## #   dil &lt;dbl&gt;, proline &lt;dbl&gt;</code></pre>
 <p>Looking at the dataset alone, we can see that most of these variables are continuous. But we have too many characteristics to work with, hurting the insight we could gain. Let’s try to do what we did last time with our <a href="">breast cancer dataset</a>. We need to see if there may be an apparent way to separate the classes and the characteristics based on visualization alone.</p>
 <div id="exploratory-data-analysis" class="section level3">
 <h3>Exploratory data analysis</h3>
@@ -92,18 +93,18 @@ tt.sets &lt;- select(wine,
          test.s = map(test, as_data_frame))</code></pre>
 <pre class="r"><code>tt.sets</code></pre>
 <pre><code>## # A tibble: 100 x 7
-##    train     test      .id   ind.tr     ind.te   train.s       test.s      
-##    &lt;list&gt;    &lt;list&gt;    &lt;chr&gt; &lt;list&gt;     &lt;list&gt;   &lt;list&gt;        &lt;list&gt;      
-##  1 &lt;resampl… &lt;resampl… 001   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
-##  2 &lt;resampl… &lt;resampl… 002   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
-##  3 &lt;resampl… &lt;resampl… 003   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
-##  4 &lt;resampl… &lt;resampl… 004   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
-##  5 &lt;resampl… &lt;resampl… 005   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
-##  6 &lt;resampl… &lt;resampl… 006   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
-##  7 &lt;resampl… &lt;resampl… 007   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
-##  8 &lt;resampl… &lt;resampl… 008   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
-##  9 &lt;resampl… &lt;resampl… 009   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
-## 10 &lt;resampl… &lt;resampl… 010   &lt;int [124… &lt;int [5… &lt;tibble [124… &lt;tibble [54…
+##    train     test      .id   ind.tr     ind.te    train.s         test.s        
+##    &lt;list&gt;    &lt;list&gt;    &lt;chr&gt; &lt;list&gt;     &lt;list&gt;    &lt;list&gt;          &lt;list&gt;        
+##  1 &lt;resampl… &lt;resampl… 001   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
+##  2 &lt;resampl… &lt;resampl… 002   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
+##  3 &lt;resampl… &lt;resampl… 003   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
+##  4 &lt;resampl… &lt;resampl… 004   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
+##  5 &lt;resampl… &lt;resampl… 005   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
+##  6 &lt;resampl… &lt;resampl… 006   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
+##  7 &lt;resampl… &lt;resampl… 007   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
+##  8 &lt;resampl… &lt;resampl… 008   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
+##  9 &lt;resampl… &lt;resampl… 009   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
+## 10 &lt;resampl… &lt;resampl… 010   &lt;int [124… &lt;int [54… &lt;tibble [124 ×… &lt;tibble [54 ×…
 ## # … with 90 more rows</code></pre>
 <p>Now that we have the train and test sets, we can build our multinomial logistic regression model using the <code>nnet</code> package.</p>
 </div>
@@ -191,6 +192,8 @@ select(wine,
   ggplot(aes(x = Y1, y = Y2)) + 
   geom_point(aes(color = class)) + 
   facet_grid(X1 ~ X2)</code></pre>
+<pre><code>## Warning: `cols` is now required.
+## Please use `cols = c(pairs)`</code></pre>
 <p><img src="/post/wine_post_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <p>Whenever <code>proline</code> is used with variables like <code>col.Int</code>, <code>dil</code>, <code>hue</code>, and <code>tot.Phen</code>, the classes (the dots) seem to separate nicely. I’m considering having interaction models for these variables in a future post, but now we know that these variables work really well to separate the classes, at least in the way we visualized them in 2D space.</p>
 <p>Let’s try doing that same visualization, but this time, we try to show where the points were classified correctly and incorrectly in this dataset.</p>
@@ -229,6 +232,8 @@ select(wine,
   ggplot(aes(x = Y1, y = Y2)) + 
   geom_point(aes(color = hit)) + 
   facet_grid(X1 ~ X2)</code></pre>
+<pre><code>## Warning: `cols` is now required.
+## Please use `cols = c(pairs)`</code></pre>
 <p><img src="/post/wine_post_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>We see that where the errors are are where the classes often mix. As is the usual case with these models.</p>
 </div>

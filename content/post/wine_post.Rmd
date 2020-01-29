@@ -2,6 +2,7 @@
 title: "Wasted on data: Exploring the wine dataset"
 output: html_document
 date: "2019-02-19"
+image: "wine-og-thumbnail.png"
 ---
 
 Whether you're a drinker or not, chances are that alcohol has played some part in the culture of where you live. It would be awesome to take measurements on any wine and be able to determine what kind of wine it was. In this dataset, we're sticking with three unidentified types of wine.  

@@ -3,6 +3,7 @@ title: 'SundayStats: median()'
 author: "Jose Francisco Endrinal"
 date: "2019-06-20"
 output: html_document
+image: "default-og-thumbnail.png"
 ---
 
 
@@ -11,7 +12,7 @@ output: html_document
 <pre class="r"><code>median</code></pre>
 <pre><code>## function (x, na.rm = FALSE, ...) 
 ## UseMethod(&quot;median&quot;)
-## &lt;bytecode: 0x55ed71ecfdc0&gt;
+## &lt;bytecode: 0x55d117a4e568&gt;
 ## &lt;environment: namespace:stats&gt;</code></pre>
 <p>R assigns a median method that can work depending on the variable you input in <code>x</code>. By default, R computes the median in the following manner:</p>
 <pre class="r"><code>median.default</code></pre>
@@ -33,7 +34,7 @@ output: html_document
 ##         sort(x, partial = half)[half]
 ##     else mean(sort(x, partial = half + 0L:1L)[half + 0L:1L])
 ## }
-## &lt;bytecode: 0x55ed71b9e540&gt;
+## &lt;bytecode: 0x55d119c7f2c8&gt;
 ## &lt;environment: namespace:stats&gt;</code></pre>
 <p>The following lines are the real meat of the implementation:</p>
 <pre><code>if (n%%2L == 1L) 

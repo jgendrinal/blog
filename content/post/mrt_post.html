@@ -2,6 +2,7 @@
 title: "The MRT dataset: A Case in Exploratory Data Analysis"
 output: html_document
 date: "2018-05-09"
+image: "mrt-og-thumbnail.png"
 ---
 
 
@@ -59,10 +60,9 @@ mrt.dt</code></pre>
 <pre><code>##  [1] ayala      boni       buendia    cubao      gma        guadalupe 
 ##  [7] magallanes north      ortigas    quezon     santolan   shaw      
 ## [13] taft      
-## 13 Levels: taft &lt; magallanes &lt; ayala &lt; buendia &lt; guadalupe &lt; ... &lt; north</code></pre>
+## 13 Levels: taft &lt; magallanes &lt; ayala &lt; buendia &lt; guadalupe &lt; boni &lt; ... &lt; north</code></pre>
 <pre class="r"><code>unique(mrt.dt$hour)</code></pre>
-<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
-## [24] 24</code></pre>
+<pre><code>##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24</code></pre>
 <p>Looking at the averages for traffic <code>entry</code>, <code>exit</code>, and <code>net</code> overall, we have the following:</p>
 <pre class="r"><code>summary(select(mrt.dt, entry, exit, net))</code></pre>
 <pre><code>##      entry            exit            net          

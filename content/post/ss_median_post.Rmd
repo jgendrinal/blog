@@ -3,6 +3,7 @@ title: 'SundayStats: median()'
 author: "Jose Francisco Endrinal"
 date: "2019-06-20"
 output: html_document
+image: "default-og-thumbnail.png"
 ---
 
 The median is a statistical measure of central tendency of a variable given an ordered position of its variables. It has several advantages over the mean. One is that it is not affected as much by extreme values, which is an advantage if you variable is very dependent on extreme values like income and number of children. R's implementation of the `median()` function depends on the input, and can be controlled.  
