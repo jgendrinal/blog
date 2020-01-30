@@ -16,9 +16,6 @@
 <meta property="og:title" content="{{ .Title }}" />
 <meta property="og:site_name" content="{{ .Site.Title }}" />
 <meta property="og:image" content="{{ .Site.BaseURL }}images/{{ .Params.image }}" />
-<meta property="twitter:card" content="summary_large_image" />
-<meta property="twitter:title" content="{{ .Title }}" />
-<meta property="twitter:image" content="{{ .Site.BaseURL }}images/{{ .Params.image }}" />  
 <meta prefix="og: http://ogp.me/ns#" property="og:image" content="{{ .Site.BaseURL }}images/{{ .Params.image }}" />
 <meta property="og:image:type" content="image/jpeg" />
 <meta property="og:image:width" content="" />
@@ -49,6 +46,6 @@
   name="twitter:description"
   content="{{ .Description | default .Summary }}|{{ .Site.Params.Description }}"
 />
-<meta name="twitter:image:src" content="" />
+<meta name="twitter:image:src" content= "{{ .Site.BaseURL }}images/{{ .Params.image }}" />
 <meta name="twitter:domain" content="{{ .Permalink }}" />
 {{ end }}
