@@ -12,7 +12,7 @@ image: "default-og-thumbnail.png"
 <pre class="r"><code>median</code></pre>
 <pre><code>## function (x, na.rm = FALSE, ...) 
 ## UseMethod(&quot;median&quot;)
-## &lt;bytecode: 0x559d9396e568&gt;
+## &lt;bytecode: 0x55866b0b7568&gt;
 ## &lt;environment: namespace:stats&gt;</code></pre>
 <p>R assigns a median method that can work depending on the variable you input in <code>x</code>. By default, R computes the median in the following manner:</p>
 <pre class="r"><code>median.default</code></pre>
@@ -34,7 +34,7 @@ image: "default-og-thumbnail.png"
 ##         sort(x, partial = half)[half]
 ##     else mean(sort(x, partial = half + 0L:1L)[half + 0L:1L])
 ## }
-## &lt;bytecode: 0x559d95b9ef10&gt;
+## &lt;bytecode: 0x55866d2e7f10&gt;
 ## &lt;environment: namespace:stats&gt;</code></pre>
 <p>The following lines are the real meat of the implementation:</p>
 <pre><code>if (n%%2L == 1L) 
