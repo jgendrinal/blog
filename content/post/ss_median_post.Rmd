@@ -19,6 +19,7 @@ median.default
 ```
 
 The following lines are the real meat of the implementation:  
+
 ```
 if (n%%2L == 1L) 
     sort(x, partial = half)[half]
