@@ -7,12 +7,6 @@ title: About this site
 
 Hi! You can call me Francis. I do data work for banks, credit companies and similar businesses. I write this blog to document my journey in getting better at working with data, while working at a full-time job.  
 
-<div style = "width:image width px; font-size:80%; text-align:center;"> 
-<img src="/about_files/IMG20190429063305.jpg" width="width" height="height" style = "padding-bottom:0.5em;" />
-<br>
-Me, early in the office ahead of my manager. I sent him this photo shortly after.
-</div> 
-
 Python and R are favorites, but R is my tool of choice. Partly because it was taught in college. But also because the R community produces really great tools that are just not available yet elsewhere.  
 
 ## Why "data salaryman"?
