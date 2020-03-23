@@ -1,0 +1,191 @@
+---
+title: "mtcars"
+author: "Jose Francisco Endrinal"
+date: "2020-03-23"
+output: html_document
+image: "mtcars-og-thumbnail.png"
+---
+
+The mtcars dataset lists different cars from 1973-1974 comparing their fuel consumption and other attributes. This dataset sought to figure out the relationship between the different design aspects of the cars engine from it's shape (v-type or straight) to its transmission (automatic or manual).  
+
+Obviously the goal of this dataset is to find a relationship between the different aspects of the car's design to its average fuel efficiency (miles per gallon). This is a very small dataset, so it should be interesting how we will treat it. 
+
+```{r message = FALSE, warning = FALSE, cache = FALSE}
+# Load packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(purrr)
+library(rlang)
+library(stringr)
+
+# Load dataset
+as_tibble(mtcars) -> mtcars
+```
+
+## First look
+
+```{r}
+mtcars
+```
+
+Documentation for this dataset in r (`?mtcars`) gives us the following variable descriptions:  
+
+```
+[, 1]	mpg	Miles/(US) gallon
+[, 2]	cyl	Number of cylinders
+[, 3]	disp	Displacement (cu.in.)
+[, 4]	hp	Gross horsepower
+[, 5]	drat	Rear axle ratio
+[, 6]	wt	Weight (1000 lbs)
+[, 7]	qsec	1/4 mile time
+[, 8]	vs	Engine (0 = V-shaped, 1 = straight)
+[, 9]	am	Transmission (0 = automatic, 1 = manual)
+[,10]	gear	Number of forward gears
+[,11]	carb	Number of carburetors
+```
+Now, let's check if `cyl`, `vs`, `am`, `gear`, and `carb` are discrete variables. 
+
+```{r}
+tibble(var = c("cyl", "vs", "am", "gear", "carb")) %>% 
+  mutate(values = map(var, function(x) {
+    unique(mtcars[[x]]) %>% as.character()
+  })) %>% 
+  unnest(values)
+```
+
+We can safely convert them to character variables for the EDA.
+
+```{r}
+mtcars2 <- mtcars %>% 
+  mutate_at(c("cyl", "vs", "am", "gear", "carb"), as.character)
+mtcars2
+```
+
+## Exploratory data analysis
+
+#### Target over attributes
+
+```{r}
+select_if(mtcars2, is.numeric) %>% 
+  gather(-mpg, key = "var", value = "value") %>% 
+  ggplot(aes(x = value, y = mpg)) + 
+  geom_point() + 
+  facet_wrap(~var)
+```
+
+Let's try that again without disp and hp. 
+
+```{r}
+select_if(mtcars2, is.numeric) %>% 
+  select(-disp, -hp) %>% 
+  gather(-mpg, key = "var", value = "value") %>% 
+  ggplot(aes(x = value, y = mpg)) + 
+  geom_point() + 
+  facet_wrap(~var)
+```
+
+For the numeric variables, since some of them are very close to each other, and so are much farther apart, we're going to have to normalize them to isolate which values are greater and which are smaller.  
+
+Good. Now let's look at the distribution of the categorical variables.  
+
+```{r}
+select_if(mtcars2, is.character) %>% 
+  gather(key = "var", value = "value") %>% 
+  ggplot(aes(x = value)) + 
+  geom_bar(stat = "count") + 
+  facet_wrap(~var)
+```
+
+Save for `Number of carburetors`, I'd say we have a fairly representative dataset for most of these values. Let's find the distribution of our target. 
+
+```{r}
+select(mtcars2, cyl, vs, am, gear, carb, mpg) %>% 
+  gather(key = "var", value = "val", -mpg) %>% 
+  ggplot(aes(x = val, y = mpg)) + 
+  geom_violin(aes(fill = val)) + 
+  facet_wrap(~var) + 
+  theme(legend.position = "none")
+```
+
+```{r echo=FALSE}
+rm(mtcars2)
+```
+
+
+These variables are separate enough for us to separate the mpg from each other. Using visual inspection, `Shape of the engine` and `Number of cylinders` seem to be the best candidates for this. But we'll still use all of the variables.  
+
+You could do an EDA on the interactions between these variables, but this will belabor the post. Let's try to do some modelling.  
+
+## Feature selection and modelling
+
+We can take the BIC of all the variables to get which variables to prioritize when adding them to our model. Then, we add them incrementally to see which works. In code, our algorithm is:  
+
+```{r}
+bic_model <- function(data, y) { 
+  y <- enquo(y)
+  
+  # Arrange variables according to lowest BIC value
+  var_order_list <- tibble(name = names(data)) %>% 
+    filter(name != as_label(y)) %>% 
+    mutate(values = map(name, function(x) {
+                                data[[x]]
+                              }), 
+           !!y := list(data[[as_label(y)]]), 
+           model = map2(values, !!y, function(x, y) {
+                                       lm(y ~ x, data = data.frame(x, y))
+                                     }), 
+           bic = map_dbl(model, BIC)) %>% 
+    arrange(bic) %>% 
+    select(name, bic)
+  
+  # Hit list
+  hit_list <- tibble(var = var_order_list$name, 
+                     hit = FALSE) %>% 
+    filter(var != var_order_list$name[[1]])
+  
+  # Initial formula
+  lead_form <- str_c(as_label(y), " ~ ", var_order_list$name[[1]])
+  
+  # Initial BIC
+  lead_bic <- var_order_list$bic[[1]]
+  
+  # Increment adding variables down the list
+  while (any(hit_list$hit == FALSE)) {
+    # Get first variable not hit
+    var_cand <- filter(hit_list, !hit) %>% .$var %>% .[[1]]
+    cand_form <- str_c(lead_form, " + ", var_cand)
+    cand_model <- lm(cand_form, data = data)
+    
+    if (BIC(cand_model) < lead_bic) { # Check if candidate BIC beats our leader
+      # Reset list and benchmarks
+      hit_list <- filter(hit_list, var != var_cand) %>% 
+        mutate(hit = FALSE)
+      lead_form <- cand_form
+      lead_bic <- BIC(cand_model)
+      next
+    } else {
+      # Rundown through list
+      hit_list$hit[[match(var_cand, hit_list$var)]] <- TRUE
+    }
+  }
+  
+  inform(str_c("Formula: ", cand_form, "\nWith BIC: ", lead_bic))
+  cand_model
+}
+```
+
+With the following algorithm in place, we can now build derive our model and interpret the model coefficients. 
+
+## Interpretation of model coefficients
+
+This is a very small dataset (sample of 32), so doing cross-validation is going to be overkill at this point.  
+
+Let's take a look at the model coefficients and their significance:  
+
+```{r}
+summary(bic_model(mtcars, mpg))
+```
+
+For this linear model, we read that every thousand pounds, the car loses efficiency by ~4 miles per gallon. This is `r abs(bic_model(mtcars, mpg)$coefficients[[2]]/sd(mtcars$mpg))` times the average spread from the typical miles per gallon.  
+

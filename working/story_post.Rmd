@@ -1,6 +1,0 @@
----
-title: "How I got into data"
-author: "Jose Francisco Endrinal"
-date: "2019-05-03"
-output: html_document
----

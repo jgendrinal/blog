@@ -1,0 +1,218 @@
+---
+title: "mtcars"
+author: "Jose Francisco Endrinal"
+date: "2020-03-23"
+output: html_document
+image: "mtcars-og-thumbnail.png"
+---
+
+
+
+<p>The mtcars dataset lists different cars from 1973-1974 comparing their fuel consumption and other attributes. This dataset sought to figure out the relationship between the different design aspects of the cars engine from it’s shape (v-type or straight) to its transmission (automatic or manual).</p>
+<p>Obviously the goal of this dataset is to find a relationship between the different aspects of the car’s design to its average fuel efficiency (miles per gallon). This is a very small dataset, so it should be interesting how we will treat it.</p>
+<pre class="r"><code># Load packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(purrr)
+library(rlang)
+library(stringr)
+
+# Load dataset
+as_tibble(mtcars) -&gt; mtcars</code></pre>
+<div id="first-look" class="section level2">
+<h2>First look</h2>
+<pre class="r"><code>mtcars</code></pre>
+<pre><code>## # A tibble: 32 x 11
+##      mpg   cyl  disp    hp  drat    wt  qsec    vs    am  gear  carb
+##    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1  21       6  160    110  3.9   2.62  16.5     0     1     4     4
+##  2  21       6  160    110  3.9   2.88  17.0     0     1     4     4
+##  3  22.8     4  108     93  3.85  2.32  18.6     1     1     4     1
+##  4  21.4     6  258    110  3.08  3.22  19.4     1     0     3     1
+##  5  18.7     8  360    175  3.15  3.44  17.0     0     0     3     2
+##  6  18.1     6  225    105  2.76  3.46  20.2     1     0     3     1
+##  7  14.3     8  360    245  3.21  3.57  15.8     0     0     3     4
+##  8  24.4     4  147.    62  3.69  3.19  20       1     0     4     2
+##  9  22.8     4  141.    95  3.92  3.15  22.9     1     0     4     2
+## 10  19.2     6  168.   123  3.92  3.44  18.3     1     0     4     4
+## # … with 22 more rows</code></pre>
+<p>Documentation for this dataset in r (<code>?mtcars</code>) gives us the following variable descriptions:</p>
+<pre><code>[, 1]   mpg Miles/(US) gallon
+[, 2]   cyl Number of cylinders
+[, 3]   disp    Displacement (cu.in.)
+[, 4]   hp  Gross horsepower
+[, 5]   drat    Rear axle ratio
+[, 6]   wt  Weight (1000 lbs)
+[, 7]   qsec    1/4 mile time
+[, 8]   vs  Engine (0 = V-shaped, 1 = straight)
+[, 9]   am  Transmission (0 = automatic, 1 = manual)
+[,10]   gear    Number of forward gears
+[,11]   carb    Number of carburetors</code></pre>
+<p>Now, let’s check if <code>cyl</code>, <code>vs</code>, <code>am</code>, <code>gear</code>, and <code>carb</code> are discrete variables.</p>
+<pre class="r"><code>tibble(var = c(&quot;cyl&quot;, &quot;vs&quot;, &quot;am&quot;, &quot;gear&quot;, &quot;carb&quot;)) %&gt;% 
+  mutate(values = map(var, function(x) {
+    unique(mtcars[[x]]) %&gt;% as.character()
+  })) %&gt;% 
+  unnest(values)</code></pre>
+<pre><code>## # A tibble: 16 x 2
+##    var   values
+##    &lt;chr&gt; &lt;chr&gt; 
+##  1 cyl   6     
+##  2 cyl   4     
+##  3 cyl   8     
+##  4 vs    0     
+##  5 vs    1     
+##  6 am    1     
+##  7 am    0     
+##  8 gear  4     
+##  9 gear  3     
+## 10 gear  5     
+## 11 carb  4     
+## 12 carb  1     
+## 13 carb  2     
+## 14 carb  3     
+## 15 carb  6     
+## 16 carb  8</code></pre>
+<p>We can safely convert them to character variables for the EDA.</p>
+<pre class="r"><code>mtcars2 &lt;- mtcars %&gt;% 
+  mutate_at(c(&quot;cyl&quot;, &quot;vs&quot;, &quot;am&quot;, &quot;gear&quot;, &quot;carb&quot;), as.character)
+mtcars2</code></pre>
+<pre><code>## # A tibble: 32 x 11
+##      mpg cyl    disp    hp  drat    wt  qsec vs    am    gear  carb 
+##    &lt;dbl&gt; &lt;chr&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt;
+##  1  21   6      160    110  3.9   2.62  16.5 0     1     4     4    
+##  2  21   6      160    110  3.9   2.88  17.0 0     1     4     4    
+##  3  22.8 4      108     93  3.85  2.32  18.6 1     1     4     1    
+##  4  21.4 6      258    110  3.08  3.22  19.4 1     0     3     1    
+##  5  18.7 8      360    175  3.15  3.44  17.0 0     0     3     2    
+##  6  18.1 6      225    105  2.76  3.46  20.2 1     0     3     1    
+##  7  14.3 8      360    245  3.21  3.57  15.8 0     0     3     4    
+##  8  24.4 4      147.    62  3.69  3.19  20   1     0     4     2    
+##  9  22.8 4      141.    95  3.92  3.15  22.9 1     0     4     2    
+## 10  19.2 6      168.   123  3.92  3.44  18.3 1     0     4     4    
+## # … with 22 more rows</code></pre>
+</div>
+<div id="exploratory-data-analysis" class="section level2">
+<h2>Exploratory data analysis</h2>
+<div id="target-over-attributes" class="section level4">
+<h4>Target over attributes</h4>
+<pre class="r"><code>select_if(mtcars2, is.numeric) %&gt;% 
+  gather(-mpg, key = &quot;var&quot;, value = &quot;value&quot;) %&gt;% 
+  ggplot(aes(x = value, y = mpg)) + 
+  geom_point() + 
+  facet_wrap(~var)</code></pre>
+<p><img src="/post/mtcars_post_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Let’s try that again without disp and hp.</p>
+<pre class="r"><code>select_if(mtcars2, is.numeric) %&gt;% 
+  select(-disp, -hp) %&gt;% 
+  gather(-mpg, key = &quot;var&quot;, value = &quot;value&quot;) %&gt;% 
+  ggplot(aes(x = value, y = mpg)) + 
+  geom_point() + 
+  facet_wrap(~var)</code></pre>
+<p><img src="/post/mtcars_post_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>For the numeric variables, since some of them are very close to each other, and so are much farther apart, we’re going to have to normalize them to isolate which values are greater and which are smaller.</p>
+<p>Good. Now let’s look at the distribution of the categorical variables.</p>
+<pre class="r"><code>select_if(mtcars2, is.character) %&gt;% 
+  gather(key = &quot;var&quot;, value = &quot;value&quot;) %&gt;% 
+  ggplot(aes(x = value)) + 
+  geom_bar(stat = &quot;count&quot;) + 
+  facet_wrap(~var)</code></pre>
+<p><img src="/post/mtcars_post_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Save for <code>Number of carburetors</code>, I’d say we have a fairly representative dataset for most of these values. Let’s find the distribution of our target.</p>
+<pre class="r"><code>select(mtcars2, cyl, vs, am, gear, carb, mpg) %&gt;% 
+  gather(key = &quot;var&quot;, value = &quot;val&quot;, -mpg) %&gt;% 
+  ggplot(aes(x = val, y = mpg)) + 
+  geom_violin(aes(fill = val)) + 
+  facet_wrap(~var) + 
+  theme(legend.position = &quot;none&quot;)</code></pre>
+<p><img src="/post/mtcars_post_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>These variables are separate enough for us to separate the mpg from each other. Using visual inspection, <code>Shape of the engine</code> and <code>Number of cylinders</code> seem to be the best candidates for this. But we’ll still use all of the variables.</p>
+<p>You could do an EDA on the interactions between these variables, but this will belabor the post. Let’s try to do some modelling.</p>
+</div>
+</div>
+<div id="feature-selection-and-modelling" class="section level2">
+<h2>Feature selection and modelling</h2>
+<p>We can take the BIC of all the variables to get which variables to prioritize when adding them to our model. Then, we add them incrementally to see which works. In code, our algorithm is:</p>
+<pre class="r"><code>bic_model &lt;- function(data, y) { 
+  y &lt;- enquo(y)
+  
+  # Arrange variables according to lowest BIC value
+  var_order_list &lt;- tibble(name = names(data)) %&gt;% 
+    filter(name != as_label(y)) %&gt;% 
+    mutate(values = map(name, function(x) {
+                                data[[x]]
+                              }), 
+           !!y := list(data[[as_label(y)]]), 
+           model = map2(values, !!y, function(x, y) {
+                                       lm(y ~ x, data = data.frame(x, y))
+                                     }), 
+           bic = map_dbl(model, BIC)) %&gt;% 
+    arrange(bic) %&gt;% 
+    select(name, bic)
+  
+  # Hit list
+  hit_list &lt;- tibble(var = var_order_list$name, 
+                     hit = FALSE) %&gt;% 
+    filter(var != var_order_list$name[[1]])
+  
+  # Initial formula
+  lead_form &lt;- str_c(as_label(y), &quot; ~ &quot;, var_order_list$name[[1]])
+  
+  # Initial BIC
+  lead_bic &lt;- var_order_list$bic[[1]]
+  
+  # Increment adding variables down the list
+  while (any(hit_list$hit == FALSE)) {
+    # Get first variable not hit
+    var_cand &lt;- filter(hit_list, !hit) %&gt;% .$var %&gt;% .[[1]]
+    cand_form &lt;- str_c(lead_form, &quot; + &quot;, var_cand)
+    cand_model &lt;- lm(cand_form, data = data)
+    
+    if (BIC(cand_model) &lt; lead_bic) { # Check if candidate BIC beats our leader
+      # Reset list and benchmarks
+      hit_list &lt;- filter(hit_list, var != var_cand) %&gt;% 
+        mutate(hit = FALSE)
+      lead_form &lt;- cand_form
+      lead_bic &lt;- BIC(cand_model)
+      next
+    } else {
+      # Rundown through list
+      hit_list$hit[[match(var_cand, hit_list$var)]] &lt;- TRUE
+    }
+  }
+  
+  inform(str_c(&quot;Formula: &quot;, cand_form, &quot;\nWith BIC: &quot;, lead_bic))
+  cand_model
+}</code></pre>
+<p>With the following algorithm in place, we can now build derive our model and interpret the model coefficients.</p>
+</div>
+<div id="interpretation-of-model-coefficients" class="section level2">
+<h2>Interpretation of model coefficients</h2>
+<p>This is a very small dataset (sample of 32), so doing cross-validation is going to be overkill at this point.</p>
+<p>Let’s take a look at the model coefficients and their significance:</p>
+<pre class="r"><code>summary(bic_model(mtcars, mpg))</code></pre>
+<pre><code>## Formula: mpg ~ wt + cyl + qsec
+## With BIC: 161.873008682462</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = cand_form, data = data)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -4.5937 -1.5621 -0.3595  1.2097  5.5500 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  29.4291     8.1912   3.593 0.001238 ** 
+## wt           -3.8616     0.9138  -4.226 0.000229 ***
+## cyl          -0.9277     0.6113  -1.518 0.140280    
+## qsec          0.4945     0.3863   1.280 0.211061    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 2.54 on 28 degrees of freedom
+## Multiple R-squared:  0.8396, Adjusted R-squared:  0.8224 
+## F-statistic: 48.86 on 3 and 28 DF,  p-value: 2.979e-11</code></pre>
+<p>For this linear model, we read that every thousand pounds, the car loses efficiency by ~4 miles per gallon. This is 0.640729 times the average spread from the typical miles per gallon.</p>
+</div>

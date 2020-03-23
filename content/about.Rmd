@@ -1,36 +1,42 @@
 ---
-date: "2019-04-14"
+date: "2020-02-05"
 title: About this site
 ---
 
 ## About me
 
-Hi! You can call me Francis. I work in consulting for banks and similar companies. Much of what I do is data import, cleanup, analysis, and presentation for the clients we serve. I write this blog to document my journey in getting better at working with data, while working at a full-time job.  
-
-<div style = "width:image width px; font-size:80%; text-align:center;"> 
-<img src="/about_files/IMG20190429063305.jpg" width="width" height="height" style = "padding-bottom:0.5em;" />
-<br>
-Me, early in the office ahead of my manager. I sent him this photo shortly after.
-</div> 
+Hi! You can call me Francis. I do data work for banks, credit companies and similar businesses. I write this blog to document my journey in getting better at working with data, while working at a full-time job.  
 
 Python and R are favorites, but R is my tool of choice. Partly because it was taught in college. But also because the R community produces really great tools that are just not available yet elsewhere.  
 
 ## Why "data salaryman"?
 
-Fancy deep learning models, "big data" infrastructures, and flashy visualizations are not that interesting to me. There are data problems in front of the firm and our clients that have to be dealt with before we get there. They include cleaning messy data we inherit, creating meaningful visualizations and reports, and convinving management that a data strategy is important.  
+#### Status quo: Fancy for fancy's sake 
 
-*These are the things that professionals working with data deal with every day. This site is about that work, particularly mine. Hopefully, the people reading this can learn something about the unique challenges working with data, and, hopefully, how those challenges can be overcome.*  
+There's a nauseating "race-to-the-edge" in the data space. Data workers are obsessed with using the most sophisticated tech to engineer the most sophisticated models. A lot of  money is spent on making huge office buildings, when a one-room office floor will do just fine. 
 
-Much of my work is centered around simple data cleaning, nonchalant visualizations, and linear models. The other part is in creating tools both the firm and the banks can use to do their best work.  
+Public companies want to chase this hype because they think that by doing so, they can make their stock go up. C-suites will often chase short-term rewards so that they can tell investors how they are chasing "innovation." They will say that they have bought x system and a license for y software, and that they hired z number of data scientists.  
 
-There are two worlds in the data space right now. One side is what you could consider more "mature". This is where the more complex and/or cutting-edge work in data is taking place. Here we find neural networks architectures, ETL work, the use of tools like Spark and Hadoop, etc. The second world is that of businesses (both large and small) who are using Excel and may have their toes in R, Python or similar languages. Their sort of data work is much more humble. They tend to use only linear models, very simple visualizations, and usually use code as a support to generate their numbers they copy paste in Word or Excel.  
+A lot of money, time, and effort is spent and wasted. 
 
-I consider myself part of the second camp. Many of these companies are still in the second camp. They have data working systems but are not agile enough to maximize their value or minimize their downside risk. It was during the popularization of working with data (famously known as "data science") that people now understand what more could be done. Because a lot of companies did not see this coming, they were not prepared for it. And because companies here are generally not competitive, management has a general inertia towards change.  
+#### Everyday data work
 
+The truth is that all of that is hype. Almost none of the buzzwords will have real impact on the business in the next five years. What is publicized is often a small experimental part of the company that management wants to use to convince investors otherwise. 
 
+Most of the data work in business is still done in Excel (undoubtedly a great tool, but one I've come to personally loathe). Most data storage and analysis is done on a company PC. Most data workers are called by other names e.g. analyst, consultant, controller, specialist, economist, etc. They all do very important data work.  
+
+There are everyday data problems that businesses have to deal with. They include cleaning messy data, creating meaningful visualizations and reports, and aligning the analysis to an overall strategy. Our time and effort should be invested into making data work better for all.  
+
+#### Salaryman: the foundation of our society
+
+Our day to day lives rest on the salarymen who do their work consistently and carefully. This is a reality we take for granted at our peril. Your lunch is the work of many people who have devoted their craft to creating the recipe, cooking the meal, and serving it with hospitality. But to us lunch is just lunch.  
+
+Take that dedication and hardwork away, and most of modern life would be a nightmare. The lights will never be on, the plumbing will not work, your home will fall under its own weight, and the commute to work would be a pain.  
+
+Data is now the way by which we measure the world and make decisions. What is true for ordinary work is true for data work.  
 
 ## Where to contact me  
  
-[Twitter - \@livingwithdata](https://twitter.com/livingwithdata)  
-[Email - livingwithdata\@gmail\.com](mailto:livingwithdata@gmail.com)  
-[LinkedIn Profile](https://www.linkedin.com/in/jose-francisco-endrinal-9861687a/)
+Twitter - [\@livingwithdata](https://twitter.com/livingwithdata)  
+Email - [livingwithdata\@gmail\.com](mailto:livingwithdata@gmail.com)  
+LinkedIn - [LinkedIn Profile](https://www.linkedin.com/in/jose-francisco-endrinal-9861687a/)
