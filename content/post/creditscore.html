@@ -1,0 +1,88 @@
+---
+title: 'creditscore | Tidy workflows for credit scorecard modelling'
+author: "Jose Francisco Endrinal"
+date: "2020-04-03"
+output: html_document
+image: "creditscore-og-thumbnail.png"
+---
+
+
+
+<p>The creditscore R package is now available in public beta! The goal of this package is to be a framework for tidy workflows for credit scorecard modelling. With the use of the pipe (<code>%&gt;%</code>) and evocative functions, each step of the credit scorecard modelling process will be made easier and more transparent to the user. It will also be easier for models to be deployed in a live setting since they are now objects within R.</p>
+<p><img src="/post/creditscore_files/creditscore.jpeg" style="width:80.0%" /></p>
+<p>The creditscore model development framework has three main function groups:</p>
+<ol style="list-style-type: decimal">
+<li><code>bin_manual</code>, <code>c_l</code>, <code>c_r</code> - Used to bin numeric variables<br />
+</li>
+<li><code>fit_logit</code> - For taking data to fit into a logit model<br />
+</li>
+<li><code>scale_manual</code>, <code>scale_double</code> - Scaling the scorecard models to a 400+ number system or as specified by the user</li>
+</ol>
+<p>The result of the workflow is a glm model object containing the scorecard model.</p>
+<p>Finally, the utility function <code>score_credit</code> is the function that scores borrowers given their information and the model just created.</p>
+<div id="installation" class="section level2">
+<h2>Installation</h2>
+<p>You can install the development version of creditscore from the <a href="https://github.com/jgendrinal/creditscore">Github repo</a> by typing the following in your R console:</p>
+<pre class="r"><code>devtools::install_github(&quot;jgendrinal/creditscore&quot;)</code></pre>
+</div>
+<div id="example-workflow" class="section level2">
+<h2>Example workflow</h2>
+<p>The following is an example of workflow creating a scorecard model using the <code>german</code> dataset:</p>
+<pre class="r"><code>library(creditscore)
+library(dplyr)
+
+# Create scorecard model - with scaling
+card_model_scaled &lt;- bin_manual(german,
+                         bad,
+                         duration = c_r(15, 32)) %&gt;%
+  fit_logit(bad ~ duration + age + employed_since) %&gt;% 
+  scale_double_odds(odds_fifty = 600, pdo = 20)
+
+# Without scaling
+card_model_noscale &lt;- bin_manual(german,
+                         bad,
+                         duration = c_r(15, 32)) %&gt;%
+  fit_logit(bad ~ duration + age + employed_since)</code></pre>
+<p>Now that we’ve built our models, let’s see how they perform:</p>
+<pre class="r"><code>score_credit(slice(german, 1:30), card_model_scaled)</code></pre>
+<pre><code>##        1        2        3        4        5        6        7        8 
+## 545.6063 482.4050 544.1740 503.8221 513.6329 487.0091 521.9615 487.0091 
+##        9       10       11       12       13       14       15       16 
+## 548.4239 495.8447 508.7518 469.4625 521.3402 524.4407 523.4652 506.1954 
+##       17       18       19       20       21       22       23       24 
+## 521.9615 490.0654 518.7741 514.1699 530.5485 529.1318 516.8976 515.4810 
+##       25       26       27       28       29       30 
+## 522.7569 526.2985 535.6896 528.4235 525.5902 505.2544</code></pre>
+<pre class="r"><code>score_credit(slice(german, 1:30), card_model_noscale)</code></pre>
+<pre><code>##         1         2         3         4         5         6         7         8 
+## 0.1164094 0.5407867 0.1216134 0.3592202 0.2852091 0.5009856 0.2301585 0.5009856 
+##         9        10        11        12        13        14        15        16 
+## 0.1067351 0.4250014 0.3209079 0.6484114 0.2339963 0.2152885 0.2210551 0.3405140 
+##        17        18        19        20        21        22        23        24 
+## 0.2301585 0.4745269 0.2503125 0.2814302 0.1816784 0.1890922 0.2627131 0.2723332 
+##        25        26        27        28        29        30 
+## 0.2253111 0.2046105 0.1566728 0.1928852 0.2086347 0.3478755</code></pre>
+<p>The 30 samples used are part of the data that was used to fit the model (that’s bad practice, don’t do that), but the example is shown above to show you how the functions work.</p>
+</div>
+<div id="development-path-description" class="section level2">
+<h2>Development path description</h2>
+<p>More work needs to be done to further refine the functions in the package. At the moment, more tests are being written to ensure the functions in this package perform as expected. Vignettes would need to be written for this package to show people the different kinds of workflows that are possible.</p>
+<p>Additional features to be developed include the incorporation of binnning algorithms, in addition to the manual binning already provided.</p>
+<p>Banks may wish to tailor fit these functions to their specific needs. As such, a developer manual will need to be written so that they can create custom functions. A wrapper function for model specifications other than logit could be made.</p>
+</div>
+<div id="the-riskyverse" class="section level2">
+<h2>The riskyverse</h2>
+<p>This package is the start of a long list of packages that aim to create tidy workflows for risk measurement and capital planning in banks and financial institutions. The following are the future packages that will be developed, along with their tentative names:</p>
+<ol style="list-style-type: decimal">
+<li><p><code>creditparam</code> - Workflows for estimating credit risk parameters, useful for IFRS 9 ECL model development and Basel risk parameters for internal ratings-based approach for the measurement of credit risk-weighted assets</p></li>
+<li><p><code>marketrisk</code> - Workflows for the standardized modelling approach and the internal models approach in measuring market risk-weighted assets</p></li>
+<li><p><code>opsrisk</code> - Workflows for measurement of operational risk capital charge</p></li>
+<li><p><code>bankstress</code> - Workflows for modelling and simulation of stress tests given credit, market and operational risk areas</p></li>
+</ol>
+<p>This list will not be a final list as more specialized packages may be needed, and work may go beyond the scope detailed above.</p>
+</div>
+<div id="contribution" class="section level2">
+<h2>Contribution</h2>
+<p>This package is in public beta so feel free to contribute however you like. You can fork it and make revisions and comments as needed.</p>
+<p>For questions and feedback, feel free to DM me on twitter, <a href="https://twitter.com/livingwithdata">@livingwithdata</a>.</p>
+</div>

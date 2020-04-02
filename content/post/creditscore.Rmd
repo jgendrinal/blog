@@ -1,0 +1,91 @@
+---
+title: 'creditscore | Tidy workflows for credit scorecard modelling'
+author: "Jose Francisco Endrinal"
+date: "2020-04-03"
+output: html_document
+image: "creditscore-og-thumbnail.png"
+---
+
+The creditscore R package is now available in public beta! The goal of this package is to be a framework for tidy workflows for credit scorecard modelling. With the use of the pipe (`%>%`) and evocative functions, each step of the credit scorecard modelling process will be made easier and more transparent to the user. It will also be easier for models to be deployed in a live setting since they are now objects within R.  
+
+![](/post/creditscore_files/creditscore.jpeg){width=80%}
+
+The creditscore model development framework has three main function groups:  
+
+1. `bin_manual`, `c_l`, `c_r` - Used to bin numeric variables  
+2. `fit_logit` - For taking data to fit into a logit model  
+3. `scale_manual`, `scale_double` - Scaling the scorecard models to a 400+ number system or as specified by the user
+
+The result of the workflow is a glm model object containing the scorecard model.  
+
+Finally, the utility function `score_credit` is the function that scores borrowers given their information and the model just created.  
+
+## Installation
+
+You can install the development version of creditscore from the [Github repo](https://github.com/jgendrinal/creditscore) by typing the following in your R console:
+
+``` r
+devtools::install_github("jgendrinal/creditscore")
+```
+
+## Example workflow
+
+The following is an example of workflow creating a scorecard model using the `german` dataset:  
+
+```{r example, warning=FALSE, cache=FALSE, message=FALSE}
+library(creditscore)
+library(dplyr)
+
+# Create scorecard model - with scaling
+card_model_scaled <- bin_manual(german,
+                         bad,
+                         duration = c_r(15, 32)) %>%
+  fit_logit(bad ~ duration + age + employed_since) %>% 
+  scale_double_odds(odds_fifty = 600, pdo = 20)
+
+# Without scaling
+card_model_noscale <- bin_manual(german,
+                         bad,
+                         duration = c_r(15, 32)) %>%
+  fit_logit(bad ~ duration + age + employed_since)
+```
+
+Now that we've built our models, let's see how they perform:  
+
+```{r}
+score_credit(slice(german, 1:30), card_model_scaled)
+```
+
+```{r}
+score_credit(slice(german, 1:30), card_model_noscale)
+```
+
+The 30 samples used are part of the data that was used to fit the model (that's bad practice, don't do that), but the example is shown above to show you how the functions work.  
+
+## Development path description
+
+More work needs to be done to further refine the functions in the package. At the moment, more tests are being written to ensure the functions in this package perform as expected. Vignettes would need to be written for this package to show people the different kinds of workflows that are possible.  
+
+Additional features to be developed include the incorporation of binnning algorithms, in addition to the manual binning already provided.  
+
+Banks may wish to tailor fit these functions to their specific needs. As such, a developer manual will need to be written so that they can create custom functions. A wrapper function for model specifications other than logit could be made.  
+
+## The riskyverse
+
+This package is the start of a long list of packages that aim to create tidy workflows for risk measurement and capital planning in banks and financial institutions. The following are the future packages that will be developed, along with their tentative names:  
+
+1. `creditparam` - Workflows for estimating credit risk parameters, useful for IFRS 9 ECL model development and Basel risk parameters for internal ratings-based approach for the measurement of credit risk-weighted assets  
+
+2. `marketrisk` - Workflows for the standardized modelling approach and the internal models approach in measuring market risk-weighted assets
+
+3. `opsrisk` - Workflows for measurement of operational risk capital charge
+
+4. `bankstress` - Workflows for modelling and simulation of stress tests given credit, market and operational risk areas
+
+This list will not be a final list as more specialized packages may be needed, and work may go beyond the scope detailed above.  
+
+## Contribution
+
+This package is in public beta so feel free to contribute however you like. You can fork it and make revisions and comments as needed.  
+
+For questions and feedback, feel free to DM me on twitter,  [\@livingwithdata](https://twitter.com/livingwithdata).  
