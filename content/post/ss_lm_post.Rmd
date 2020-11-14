@@ -1,0 +1,94 @@
+---
+title: 'SundayStats: lm() OR The Boston housing dataset'
+author: "Jose Francisco"
+date: "2020-04-06"
+output: html_document
+---
+
+Today's post will be a dual-type post. We will be doing an unboxing of a sample lm object inside R, while working on the Boston dataset. An lm (linear model) object is a list-type  within R that contains different components of a linear model, including its coefficients, Adjusted/R-squared, etc. R has built-in methods that deal with lm objects that are pretty straightforward.  
+
+The Boston dataset is a dataset of homes in the Boston, Massachussets area (you don't say!). It was first published in the **Journal of Environmental Economics and Management** in 1978 in a study that sought to observe the willingness of residents to pay for clean air.  
+
+```{r setup, message=FALSE, warning=FALSE, cache=FALSE}
+# Loading packages
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(purrr)
+library(MASS) # Only for the dataset
+library(forcats)
+```
+
+## First look
+
+```{r}
+MASS::Boston %>% 
+  as_tibble() %>% 
+  print(n = 10)
+```
+
+The following are the variables within the dataset:  
+
+```
+[, 1] crim, per capita crime rate by town.
+[, 2] zn, proportion of residential land zoned for lots over 25,000 sq.ft.
+[, 3] indus, proportion of non-retail business acres per town.
+[, 4] chas, Charles River dummy variable (= 1 if tract bounds river; 0 otherwise).
+[, 5] nox, nitrogen oxides concentration (parts per 10 million).
+[, 6] rm, average number of rooms per dwelling.
+[, 7] age, proportion of owner-occupied units built prior to 1940.
+[, 8] dis, weighted mean of distances to five Boston employment centres.
+[, 9] rad, index of accessibility to radial highways.
+[, 10] tax, full-value property-tax rate per \$10,000.
+[, 11] ptratio, pupil-teacher ratio by town.
+[, 12] black, 1000(Bk - 0.63)^2 where Bk is the proportion of blacks by town.
+[, 13] lstat, lower status of the population (percent).
+[, 14] medv, median value of owner-occupied homes in \$1000s.
+```
+
+This is perfect for our linear modelling exercise because all our variables are already in numeric type.  
+
+## Exploratory data analysis
+
+#### Distribution of the target
+
+```{r}
+ggplot(Boston, aes(x = medv)) + 
+  geom_density()
+```
+
+The distribution is not normal at all.  
+
+#### Target over attributes
+
+```{r}
+gather(Boston, -medv, key = "var", value = "val") %>% 
+  ggplot(aes(x = val, y = medv)) + 
+  geom_point(aes(color = var), alpha = 0.5) + 
+  facet_wrap(~var)
+```
+
+Some of these variables are closer than others, so we'll have to normalize our data to make the graph above to look right.  
+
+```{r warning=FALSE, message=FALSE}
+mutate_at(Boston, .vars = vars(-matches(c("medv", "chas"))), scale) %>% 
+  gather(-medv, key = "var", value = "val") %>% 
+  ggplot(aes(x = val, y = medv)) + 
+  geom_point(aes(color = var), alpha = 0.5) + 
+  facet_wrap(~var)
+```
+
+`lstat`, and `rm` seem to have an obvious relationship, which makes sense. The greater the surrounding population is in the lower class, it is less likely that the neighborhood could only afford pricier homes. And the number of rooms tend to increase the value of homes in an area. The rest of the variables are somewhat ambiguous. They seem to spread regardless of the median value of the home, and not have an on-sight one-to-one relationship.  
+
+Let's check the spread of chas against the target.  
+
+```{r}
+select(Boston, chas, medv) %>% 
+  mutate(n = 1:n()) %>% 
+  ggplot(aes(x = as.character(chas), y = medv)) +  
+  geom_violin(aes(fill = chas), alpha = 0.5)
+```
+
+`chas` does not seem to be very helpful on its own.  
+
+The `lm()` function is the first model object that R users will ever encounter. It allows you to create a linear model based on a formula and the dataset as minimum requirements. 
